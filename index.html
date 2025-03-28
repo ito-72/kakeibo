@@ -82,9 +82,7 @@
     </select>
 
     <div class="suggestions" id="suggestions">
-      <div class="suggestion-tag">お米</div>
-      <div class="suggestion-tag">お肉</div>
-      <div class="suggestion-tag">牛乳</div>
+      <!-- タグはJSで動的に更新 -->
     </div>
 
     <label for="item">内容</label>
@@ -93,7 +91,46 @@
     <label for="price">金額</label>
     <input type="number" id="price" placeholder="例：500" />
 
-    <button>登録する</button>
+    <button id="submit">登録する</button>
   </div>
+
+  <script>
+    // 🔹 よく使う項目（カテゴリー別）
+    const suggestionsMap = {
+      food: ["お米", "お肉", "牛乳"],
+      daily: ["ティッシュ", "洗剤", "歯ブラシ"],
+      transport: ["電車", "バス", "ガソリン"]
+    };
+
+    // 🔹 今日の日付を初期表示
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("date").value = today;
+
+    // 🔹 カテゴリー変更で候補タグを更新
+    const categorySelect = document.getElementById("category");
+    const suggestionsDiv = document.getElementById("suggestions");
+    const itemInput = document.getElementById("item");
+
+    function updateSuggestions(category) {
+      suggestionsDiv.innerHTML = "";
+      suggestionsMap[category].forEach(word => {
+        const tag = document.createElement("div");
+        tag.className = "suggestion-tag";
+        tag.textContent = word;
+        tag.onclick = () => {
+          itemInput.value = word;
+        };
+        suggestionsDiv.appendChild(tag);
+      });
+    }
+
+    // 初期表示（食費）
+    updateSuggestions(categorySelect.value);
+
+    // カテゴリー変更時
+    categorySelect.addEventListener("change", (e) => {
+      updateSuggestions(e.target.value);
+    });
+  </script>
 </body>
 </html>
