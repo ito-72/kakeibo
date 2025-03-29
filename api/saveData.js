@@ -1,5 +1,7 @@
 // /api/saveData.js
 
+import { GAS_URL } from './config.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
@@ -12,9 +14,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const gasUrl = 'https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec'; // 🔁 GASのURLをここに！
-
-    const response = await fetch(gasUrl, {
+    const response = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ date, category, item, price })
