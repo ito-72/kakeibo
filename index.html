@@ -2,29 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>家計簿入力アプリ モック</title>
-
-  <link rel="stylesheet" href="style.css">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-  <link rel="manifest" href="/manifest.json">
-
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-
-<link rel="apple-touch-icon" href="/icon-192.png">
-
-
-</head>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>金額テスト送信</title>
   <style>
-
     body {
       font-family: sans-serif;
       background: #fdf6f0;
@@ -50,26 +30,13 @@
       margin-top: 1rem;
       font-weight: bold;
     }
-    input, select {
+    input {
       width: 100%;
       padding: 0.7rem;
       border: 1px solid #ccc;
       border-radius: 10px;
       margin-top: 0.3rem;
       font-size: 1rem;
-    }
-    .suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .suggestion-tag {
-      background: #ffe3c2;
-      padding: 0.4rem 0.8rem;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9rem;
     }
     button {
       margin-top: 2rem;
@@ -103,31 +70,9 @@
     }
   </style>
 </head>
-
-
-
 <body>
   <div class="container">
-    <h2>今日の支出を記録</h2>
-
-    <label for="date">日付</label>
-    <input type="date" id="date" />
-
-    <label for="category">カテゴリー</label>
-    <select id="category">
-      <option value="food">食費</option>
-      <option value="daily">日用品</option>
-      <option value="transport">交通費</option>
-      <!-- 🔽 カテゴリーを追加したいときはここに1行追加！
-      <option value="hobby">趣味</option> -->
-    </select>
-
-    <div class="suggestions" id="suggestions">
-      <!-- タグはJSで動的に更新 -->
-    </div>
-
-    <label for="item">内容</label>
-    <input type="text" id="item" placeholder="例：お米" />
+    <h2>金額を送信</h2>
 
     <label for="price">金額</label>
     <input type="number" id="price" placeholder="例：500" />
@@ -138,39 +83,6 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const suggestionsMap = {
-      food: ["お米", "お肉", "牛乳"],
-      daily: ["ティッシュ", "洗剤", "歯ブラシ"],
-      transport: ["電車", "バス", "ガソリン"]
-      // 🔽 カテゴリーを追加したいときはここに1行追加！
-      // hobby: ["ゲーム", "映画", "本"]
-    };
-
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById("date").value = today;
-
-    const categorySelect = document.getElementById("category");
-    const suggestionsDiv = document.getElementById("suggestions");
-    const itemInput = document.getElementById("item");
-
-    function updateSuggestions(category) {
-      suggestionsDiv.innerHTML = "";
-      suggestionsMap[category].forEach(word => {
-        const tag = document.createElement("div");
-        tag.className = "suggestion-tag";
-        tag.textContent = word;
-        tag.onclick = () => {
-          itemInput.value = word;
-        };
-        suggestionsDiv.appendChild(tag);
-      });
-    }
-
-    updateSuggestions(categorySelect.value);
-    categorySelect.addEventListener("change", (e) => {
-      updateSuggestions(e.target.value);
-    });
-
     function showToast(message) {
       const toast = document.getElementById("toast");
       toast.textContent = message;
@@ -179,12 +91,9 @@
     }
 
     document.getElementById("submit").addEventListener("click", async () => {
-      const data = {
-        date: document.getElementById("date").value,
-        category: document.getElementById("category").value,
-        item: document.getElementById("item").value,
-        price: document.getElementById("price").value
-      };
+      const price = document.getElementById("price").value;
+
+      const data = { price }; // 金額だけ送信
 
       try {
         const response = await fetch("/api/saveData.js", {
@@ -192,7 +101,6 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         });
-
 
         const result = await response.json();
         showToast(result.message || "登録しました！");
