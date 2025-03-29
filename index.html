@@ -180,18 +180,20 @@
 
     document.getElementById("submit").addEventListener("click", async () => {
       const data = {
-        date: document.getElementById("date").value,
-        category: document.getElementById("category").value,
-        item: document.getElementById("item").value,
-        price: document.getElementById("price").value
-      };
+  mode: "recordItem", // ←これが超重要！
+  date: document.getElementById("date").value,
+  category: document.getElementById("category").value,
+  item: document.getElementById("item").value,
+  price: document.getElementById("price").value
+};
 
-      try {
-        const response = await fetch("/api/saveData.js", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
+const response = await fetch("/api/recordItem", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+});
+
+
 
         const result = await response.json();
         showToast(result.message || "登録しました！");
