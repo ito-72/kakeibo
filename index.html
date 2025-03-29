@@ -178,10 +178,15 @@
       setTimeout(() => toast.classList.remove("show"), 2500);
     }
 
- document.getElementById("submit").addEventListener("click", async () => {
-  const price = document.getElementById("price").value;
 
-  const data = { price }; // 金額だけ送信
+//登録のための機能？なにこれ？
+ document.getElementById("submit").addEventListener("click", async () => {
+  const data = {
+    category: document.getElementById("category").value, // 項目
+    date: document.getElementById("date").value,         // 日
+    item: document.getElementById("item").value,         // 内容
+    price: document.getElementById("price").value        // 金額
+  };
 
   try {
     const response = await fetch("/api/saveData.js", {
@@ -197,6 +202,7 @@
     showToast("送信に失敗しました。");
   }
 });
+
 
   </script>
 </body>
