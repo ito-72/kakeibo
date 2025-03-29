@@ -179,12 +179,16 @@
     }
 
 
-//登録のための機能？なにこれ？
+//登録機能
 document.getElementById("submit").addEventListener("click", async () => {
+  const categorySelect = document.getElementById("category");
+  const category = categorySelect.options[categorySelect.selectedIndex].text; // ← 日本語名を取得！
+
   const data = {
-    category: document.getElementById("category").value, // 項目
-    item: document.getElementById("item").value,         // 内容
-    price: document.getElementById("price").value        // 金額
+    category: category, // 例：「食費」
+    date: document.getElementById("date").value,
+    item: document.getElementById("item").value,
+    price: document.getElementById("price").value
   };
 
   try {
@@ -201,6 +205,7 @@ document.getElementById("submit").addEventListener("click", async () => {
     showToast("送信に失敗しました。");
   }
 });
+
 
 
 
