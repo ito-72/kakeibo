@@ -1,29 +1,48 @@
 // /api/saveData.js
 
+// Vercel Edge Function 形式（軽量・速い）
+export const config = {
+  runtime: 'edge',
+};
+
 import { GAS_URL } from './config.js';
 
-export default async function handler(req, res) {
+export default async function handler(req) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
+    return new Response(JSON.stringify({ message: 'Method Not Allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
-  const { date, category, item, price } = req.body;
+  const { date, category, item, price } = await req.json();
 
   if (!date || !category || !item || !price) {
-    return res.status(400).json({ message: 'すべての項目を入力してください。' });
+    return new Response(JSON.stringify({ message: 'すべての項目を入力してください。' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   try {
-    const response = await fetch(GAS_URL, {
+    const gasRes = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ date, category, item, price })
     });
 
-    const result = await response.json();
-    return res.status(200).json({ message: result.message || '登録成功' });
+    const result = await gasRes.json();
+
+    return new Response(JSON.stringify({ message: result.message }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+
   } catch (error) {
-    console.error('GAS送信エラー:', error);
-    return res.status(500).json({ message: 'GASへの送信に失敗しました。' });
+    console.error("送信失敗", error);
+    return new Response(JSON.stringify({ message: 'GASへの送信に失敗しました。' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
