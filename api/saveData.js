@@ -6,13 +6,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { price } = req.body;
+  const { category, item, price } = req.body;
 
   try {
     const response = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ price })  // GASに送る形式
+      body: JSON.stringify({ category, item, price })  // 日付は削除済
     });
 
     const result = await response.json();
@@ -22,3 +22,4 @@ export default async function handler(req, res) {
     res.status(500).json({ message: 'GASへの送信に失敗しました' });
   }
 }
+
