@@ -128,13 +128,17 @@
     <input type="date" id="date" />
 
     <label for="category">カテゴリー</label>
+
+
     <select id="category">
-      <option value="food">食費</option>
-      <option value="daily">日用品</option>
-      <option value="transport">交通費</option>
-      <!-- 🔽 カテゴリーを追加したいときはここに1行追加！
-      <option value="hobby">趣味</option> -->
-    </select>
+  <option value="other">その他</option>
+  <option value="food">食費</option>
+  <option value="daily">日用品</option>
+  <option value="transport">交通費</option>
+  <option value="gas">ガソリン</option>
+  <option value="utility">光熱費</option>
+</select>
+
 
     <div class="suggestions" id="suggestions">
       <!-- タグはJSで動的に更新 -->
@@ -152,13 +156,13 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const suggestionsMap = {
-      food: ["お米", "お肉", "牛乳"],
-      daily: ["ティッシュ", "洗剤", "歯ブラシ"],
-      transport: ["電車", "バス", "ガソリン"]
-      // 🔽 カテゴリーを追加したいときはここに1行追加！
-      // hobby: ["ゲーム", "映画", "本"]
-    };
+  const suggestionsMap = {
+  food: ["お肉", "野菜", "お米", "牛乳", "ヨーグルト", "パン", "パスタ", "卵"],
+  daily: ["ティッシュ", "トイレットペーパー", "ボディソ", "シャンプー", "コンタクト", "レノア", "アリエール"],
+  gas: ["ガソリン"]
+  // other, transport, utility は suggestion 出さない（= undefined 扱い）
+};
+
 
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("date").value = today;
@@ -167,18 +171,23 @@
     const suggestionsDiv = document.getElementById("suggestions");
     const itemInput = document.getElementById("item");
 
-    function updateSuggestions(category) {
-      suggestionsDiv.innerHTML = "";
-      suggestionsMap[category].forEach(word => {
-        const tag = document.createElement("div");
-        tag.className = "suggestion-tag";
-        tag.textContent = word;
-        tag.onclick = () => {
-          itemInput.value = word;
-        };
-        suggestionsDiv.appendChild(tag);
-      });
-    }
+  function updateSuggestions(category) {
+  suggestionsDiv.innerHTML = "";
+
+  if (!suggestionsMap[category]) return; // 対応するカテゴリがなければ何もしない
+
+  suggestionsMap[category].forEach(word => {
+    const tag = document.createElement("div");
+    tag.className = "suggestion-tag";
+    tag.textContent = word;
+    tag.onclick = () => {
+      itemInput.value = word;
+    };
+    suggestionsDiv.appendChild(tag);
+  });
+}
+
+
 
     updateSuggestions(categorySelect.value);
     categorySelect.addEventListener("change", (e) => {
