@@ -142,7 +142,10 @@ input[type="date"] {
   font-weight: bold;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   color: #333;
+  width: 80%; /* ← 追加ポイント！ */
+  box-sizing: border-box; /* ← padding含めてちょうど100%に収まるように */
 }
+
 
 input[type="date"]:focus {
   outline: none;
