@@ -1,4 +1,5 @@
 // /api/saveData.js
+
 import { GAS_URL } from './config.js';
 
 export default async function handler(req, res) {
@@ -8,23 +9,33 @@ export default async function handler(req, res) {
 
   const { category, date, item, price } = req.body;
 
+  // ✅ 英語 → 日本語カテゴリ変換マップ
+  const categoryMap = {
+    other: "その他",
+    food: "食費",
+    daily: "日用品",
+    transport: "交通費",
+    gas: "ガソリン",
+    utility: "光熱費"
+  };
+
+  const categoryJP = categoryMap[category] || category;
+
   try {
-    // GASに送るデータ（modeを追加）
     const response = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        mode: "recordKakeibo", // ✅ ここを追加！
-        category,
+        mode: "recordKakeibo",
+        category: categoryJP,
         date,
         item,
         price
       })
     });
 
-    const resultText = await response.text(); // ← .json() を .text() に変更
-res.status(200).json({ message: resultText || 'GASに送信完了' });
-
+    const resultText = await response.text();
+    res.status(200).json({ message: resultText || 'GASに送信完了' });
 
   } catch (error) {
     console.error('GAS送信エラー:', error);
