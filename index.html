@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>家計簿入力アプリ モック</title>
+  <title>記録しとこ</title>
 
   <link rel="stylesheet" href="style.css">
   <meta name="mobile-web-app-capable" content="yes">
@@ -203,8 +203,10 @@ h2 {
     <label for="item">内容</label>
     <input type="text" id="item" placeholder="例：お米" />
 
+//金額欄
     <label for="price">金額</label>
-    <input type="number" id="price" placeholder="例：500" />
+   <input type="number" id="price" inputmode="numeric" pattern="[0-9]*" placeholder="例：500" />
+
 
     <button id="submit">登録する</button>
   </div>
