@@ -29,7 +29,7 @@
       font-family: sans-serif;
       background: #fdf6f0;
       margin: 0;
-      padding: 1rem;
+      padding: 5rem 1rem 1rem 1rem; /* 上に大きめ余白！ */
       display: flex;
       justify-content: center;
     }
@@ -128,6 +128,23 @@ select {
 }
 
 select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffa94d66;
+}
+
+input[type="date"] {
+  appearance: none;
+  background-color: #fff3e0;
+  border: none;
+  border-radius: 16px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+input[type="date"]:focus {
   outline: none;
   box-shadow: 0 0 0 2px #ffa94d66;
 }
