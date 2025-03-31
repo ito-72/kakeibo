@@ -170,10 +170,9 @@ h2 {
   </style>
 </head>
 
-
+<!-- 省略：<head> と <style> はそのままでOK -->
 
 <body>
-
   <canvas id="bgCanvas"></canvas>
 
   <div class="container">
@@ -183,29 +182,22 @@ h2 {
     <input type="date" id="date" />
 
     <label for="category">カテゴリー</label>
+    <select id="category">
+      <option value="food">食費</option>
+      <option value="daily">日用品</option>
+      <option value="gas">ガソリン</option>
+      <option value="utility">光熱費</option>
+      <option value="other">その他</option>
+      <option value="relax">ほっこり</option>
+    </select>
 
-
-   <select id="category">
-  <option value="food">食費</option>
-  <option value="daily">日用品</option>
-  <option value="gas">ガソリン</option>
-  <option value="utility">光熱費</option>
-  <option value="other">その他</option>
-  <option value="relax">ほっこり</option>
-</select>
-
-
-
-    <div class="suggestions" id="suggestions">
-      <!-- タグはJSで動的に更新 -->
-    </div>
+    <div class="suggestions" id="suggestions"></div>
 
     <label for="item">内容</label>
     <input type="text" id="item" placeholder="例：お米" />
 
     <label for="price">金額</label>
-   <input type="number" id="price" inputmode="numeric" pattern="[0-9]*" placeholder="例：500" />
-
+    <input type="number" id="price" inputmode="numeric" pattern="[0-9]*" placeholder="例：500" />
 
     <button id="submit">登録する</button>
   </div>
@@ -213,14 +205,13 @@ h2 {
   <div class="toast" id="toast"></div>
 
   <script>
-  const suggestionsMap = {
-  food: ["お肉", "野菜", "お米", "牛乳", "ヨーグルト", "パン", "パスタ", "卵"],
-  daily: ["ティッシュ", "トイレットペーパー", "ボディソ", "シャンプー", "コンタクト", "レノア", "アリエール"],
-  gas: ["ガソリン"]
-  // other, transport, utility は suggestion 出さない（= undefined 扱い）
-};
+    const suggestionsMap = {
+      food: ["お肉", "野菜", "お米", "牛乳", "ヨーグルト", "パン", "パスタ", "卵"],
+      daily: ["ティッシュ", "トイレットペーパー", "ボディソ", "シャンプー", "コンタクト", "レノア", "アリエール"],
+      gas: ["ガソリン"]
+    };
 
-
+    // ✅ ページ読み込み時に本日の日付をセット
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("date").value = today;
 
@@ -228,24 +219,20 @@ h2 {
     const suggestionsDiv = document.getElementById("suggestions");
     const itemInput = document.getElementById("item");
 
-function updateSuggestions(category) {
-  suggestionsDiv.innerHTML = "";
-
-  if (!suggestionsMap[category]) return;
-
-  suggestionsMap[category].forEach(word => {
-    const tag = document.createElement("div");
-    tag.className = "suggestion-tag";
-    tag.textContent = word;
-    tag.onclick = () => {
-      const current = itemInput.value.trim();
-      itemInput.value = current ? `${current} ${word}` : word;
-    };
-    suggestionsDiv.appendChild(tag);
-  });
-}
-
-
+    function updateSuggestions(category) {
+      suggestionsDiv.innerHTML = "";
+      if (!suggestionsMap[category]) return;
+      suggestionsMap[category].forEach(word => {
+        const tag = document.createElement("div");
+        tag.className = "suggestion-tag";
+        tag.textContent = word;
+        tag.onclick = () => {
+          const current = itemInput.value.trim();
+          itemInput.value = current ? `${current} ${word}` : word;
+        };
+        suggestionsDiv.appendChild(tag);
+      });
+    }
 
     updateSuggestions(categorySelect.value);
     categorySelect.addEventListener("change", (e) => {
@@ -259,99 +246,87 @@ function updateSuggestions(category) {
       setTimeout(() => toast.classList.remove("show"), 2500);
     }
 
+    // ✅ 登録ボタンを押したときの処理
+    document.getElementById("submit").addEventListener("click", async () => {
+      const data = {
+        category: document.getElementById("category").value,
+        date: document.getElementById("date").value,
+        item: document.getElementById("item").value,
+        price: document.getElementById("price").value
+      };
 
-//登録のための機能？なにこれ？
-document.getElementById("submit").addEventListener("click", async () => {
- const data = {
-  category: document.getElementById("category").value,
-  date: document.getElementById("date").value,
-  item: document.getElementById("item").value,
-  price: document.getElementById("price").value
-};
+      try {
+        const response = await fetch("/api/saveData.js", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
 
-try {
-  const response = await fetch("/api/saveData.js", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
+        const result = await response.json();
+        showToast(result.message || "登録しました！");
 
-  const result = await response.json();
-  showToast(result.message || "登録しました！");
+        // ✅ 内容と金額をリセット！
+        document.getElementById("item").value = "";
+        document.getElementById("price").value = "";
 
-  // ✅ 入力欄をクリア
-  document.getElementById("item").value = "";
-  document.getElementById("price").value = "";
+      } catch (error) {
+        console.error("送信エラー:", error);
+        showToast("送信に失敗しました。");
+      }
+    });
 
-} catch (error) {
-  console.error("送信エラー:", error);
-  showToast("送信に失敗しました。");
-}
+    // ✅ canvas 背景アニメーション（submitとは無関係に常時実行）
+    const canvas = document.getElementById("bgCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
+    const colors = ["#ff6b6b", "#ffa94d", "#69db7c", "#339af0", "#cc5de8"];
+    const circles = [];
 
-const canvas = document.getElementById("bgCanvas");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    function createCircle() {
+      const radius = Math.random() * 10 + 5;
+      const x = Math.random() * canvas.width;
+      const y = canvas.height + radius;
+      const speed = Math.random() * 0.5 + 0.3;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const angle = Math.random() * Math.PI * 2;
+      const swing = Math.random() * 1 + 0.5;
+      circles.push({ x, y, radius, speed, color, angle, swing });
+    }
 
-const colors = ["#ff6b6b", "#ffa94d", "#69db7c", "#339af0", "#cc5de8"];
-const circles = [];
+    for (let i = 0; i < 30; i++) {
+      createCircle();
+    }
 
-function createCircle() {
-  const radius = Math.random() * 10 + 5;
-  const x = Math.random() * canvas.width;
-  const y = canvas.height + radius;
-  const speed = Math.random() * 0.5 + 0.3;
-  const color = colors[Math.floor(Math.random() * colors.length)];
-  const angle = Math.random() * Math.PI * 2; // ランダムな角度でゆらぎ開始
-  const swing = Math.random() * 1 + 0.5; // ゆれ幅（0.5〜1.5px）
+    setInterval(createCircle, 500);
 
-  circles.push({ x, y, radius, speed, color, angle, swing });
-}
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 0.6;
+      for (let i = 0; i < circles.length; i++) {
+        const c = circles[i];
+        c.y -= c.speed;
+        c.angle += 0.02;
+        const offsetX = Math.sin(c.angle) * c.swing;
+        ctx.beginPath();
+        ctx.arc(c.x + offsetX, c.y, c.radius, 0, Math.PI * 2);
+        ctx.fillStyle = c.color;
+        ctx.fill();
+      }
+      while (circles.length > 200) {
+        circles.shift();
+      }
+      requestAnimationFrame(animate);
+    }
 
-// ✅ 最初に30個くらい用意しておく
-for (let i = 0; i < 30; i++) {
-  createCircle();
-}
+    animate();
 
-// 定期的に追加
-setInterval(createCircle, 500);
-
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.globalAlpha = 0.6; // ✅ 透明感追加
-
-  for (let i = 0; i < circles.length; i++) {
-    const c = circles[i];
-    c.y -= c.speed;
-    c.angle += 0.02; // 少しずつ角度変える
-    const offsetX = Math.sin(c.angle) * c.swing;
-
-    ctx.beginPath();
-    ctx.arc(c.x + offsetX, c.y, c.radius, 0, Math.PI * 2);
-    ctx.fillStyle = c.color;
-    ctx.fill();
-  }
-
-  while (circles.length > 200) {
-    circles.shift();
-  }
-
-  requestAnimationFrame(animate);
-}
-
-animate();
-
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
-
-
-
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
   </script>
-
-
 </body>
+
 </html>
