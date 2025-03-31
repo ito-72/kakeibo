@@ -22,8 +22,9 @@ export default async function handler(req, res) {
       })
     });
 
-    const result = await response.json();
-    res.status(200).json({ message: result.message || 'GASに送信完了' });
+    const resultText = await response.text(); // ← .json() を .text() に変更
+res.status(200).json({ message: resultText || 'GASに送信完了' });
+
 
   } catch (error) {
     console.error('GAS送信エラー:', error);
