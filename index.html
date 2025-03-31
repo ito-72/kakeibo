@@ -130,14 +130,19 @@
     <label for="category">カテゴリー</label>
 
 
-   <select id="category">
-  <option value="food">食費</option>
-  <option value="daily">日用品</option>
-  <option value="transport">交通費</option>
-  <option value="gas">ガソリン</option>
-  <option value="utility">光熱費</option>
-  <option value="other">その他</option>
-</select>
+ <!-- ↓これを select の代わりに貼り付ける -->
+<div class="category-tabs" id="categoryTabs">
+  <div class="category-tab active" data-value="food">食費</div>
+  <div class="category-tab" data-value="daily">日用品</div>
+  <div class="category-tab" data-value="transport">交通費</div>
+  <div class="category-tab" data-value="gas">ガソリン</div>
+  <div class="category-tab" data-value="utility">光熱費</div>
+  <div class="category-tab" data-value="other">その他</div>
+</div>
+
+<!-- JSから読み取る用に、valueだけ保持しておく -->
+<input type="hidden" id="category" value="food" />
+
 
 
 
