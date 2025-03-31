@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     other: "その他",
     food: "食費",
     daily: "日用品",
-    transport: "交通費",
+    relax: "ほっこり",
     gas: "ガソリン",
     utility: "光熱費"
   };
