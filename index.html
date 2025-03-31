@@ -130,14 +130,15 @@
     <label for="category">カテゴリー</label>
 
 
-    <select id="category">
-  <option value="other">その他</option>
+   <select id="category">
   <option value="food">食費</option>
   <option value="daily">日用品</option>
   <option value="transport">交通費</option>
   <option value="gas">ガソリン</option>
   <option value="utility">光熱費</option>
+  <option value="other">その他</option>
 </select>
+
 
 
     <div class="suggestions" id="suggestions">
@@ -171,17 +172,18 @@
     const suggestionsDiv = document.getElementById("suggestions");
     const itemInput = document.getElementById("item");
 
-  function updateSuggestions(category) {
+function updateSuggestions(category) {
   suggestionsDiv.innerHTML = "";
 
-  if (!suggestionsMap[category]) return; // 対応するカテゴリがなければ何もしない
+  if (!suggestionsMap[category]) return;
 
   suggestionsMap[category].forEach(word => {
     const tag = document.createElement("div");
     tag.className = "suggestion-tag";
     tag.textContent = word;
     tag.onclick = () => {
-      itemInput.value = word;
+      const current = itemInput.value.trim();
+      itemInput.value = current ? `${current} ${word}` : word;
     };
     suggestionsDiv.appendChild(tag);
   });
