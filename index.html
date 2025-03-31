@@ -112,6 +112,27 @@
   pointer-events: none;
 }
 
+select {
+  appearance: none; /* OSデフォルトの矢印などを非表示 */
+  background-color: #fff3e0;
+  border: none;
+  border-radius: 16px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%207%205-7z%22%20fill%3D%22%23ff6b6b%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 10px 7px;
+}
+
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffa94d66;
+}
+
+
   </style>
 </head>
 
@@ -130,19 +151,14 @@
     <label for="category">カテゴリー</label>
 
 
- <!-- ↓これを select の代わりに貼り付ける -->
-<div class="category-tabs" id="categoryTabs">
-  <div class="category-tab active" data-value="food">食費</div>
-  <div class="category-tab" data-value="daily">日用品</div>
-  <div class="category-tab" data-value="transport">交通費</div>
-  <div class="category-tab" data-value="gas">ガソリン</div>
-  <div class="category-tab" data-value="utility">光熱費</div>
-  <div class="category-tab" data-value="other">その他</div>
-</div>
-
-<!-- JSから読み取る用に、valueだけ保持しておく -->
-<input type="hidden" id="category" value="food" />
-
+   <select id="category">
+  <option value="food">食費</option>
+  <option value="daily">日用品</option>
+  <option value="transport">交通費</option>
+  <option value="gas">ガソリン</option>
+  <option value="utility">光熱費</option>
+  <option value="other">その他</option>
+</select>
 
 
 
