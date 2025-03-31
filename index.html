@@ -222,36 +222,46 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const colors = ["#ff6b6b", "#ffa94d", "#69db7c", "#339af0", "#cc5de8"]; // ブロックカラー
+const colors = ["#ff6b6b", "#ffa94d", "#69db7c", "#339af0", "#cc5de8"];
 const circles = [];
 
 function createCircle() {
-  const radius = Math.random() * 10 + 5; // 半径5〜15px
+  const radius = Math.random() * 10 + 5;
   const x = Math.random() * canvas.width;
   const y = canvas.height + radius;
-  const speed = Math.random() * 0.5 + 0.3; // ゆっくり浮く
+  const speed = Math.random() * 0.5 + 0.3;
   const color = colors[Math.floor(Math.random() * colors.length)];
+  const angle = Math.random() * Math.PI * 2; // ランダムな角度でゆらぎ開始
+  const swing = Math.random() * 1 + 0.5; // ゆれ幅（0.5〜1.5px）
 
-  circles.push({ x, y, radius, speed, color });
+  circles.push({ x, y, radius, speed, color, angle, swing });
 }
 
-// 定期的に追加（1秒に2個くらい）
+// ✅ 最初に30個くらい用意しておく
+for (let i = 0; i < 30; i++) {
+  createCircle();
+}
+
+// 定期的に追加
 setInterval(createCircle, 500);
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  ctx.globalAlpha = 0.6; // ✅ 透明感追加
+
   for (let i = 0; i < circles.length; i++) {
     const c = circles[i];
     c.y -= c.speed;
+    c.angle += 0.02; // 少しずつ角度変える
+    const offsetX = Math.sin(c.angle) * c.swing;
 
     ctx.beginPath();
-    ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
+    ctx.arc(c.x + offsetX, c.y, c.radius, 0, Math.PI * 2);
     ctx.fillStyle = c.color;
     ctx.fill();
   }
 
-  // 画面外に出たものは削除
   while (circles.length > 200) {
     circles.shift();
   }
@@ -261,7 +271,6 @@ function animate() {
 
 animate();
 
-// リサイズ対応
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
