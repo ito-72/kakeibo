@@ -269,20 +269,25 @@ document.getElementById("submit").addEventListener("click", async () => {
   price: document.getElementById("price").value
 };
 
-  try {
-    const response = await fetch("/api/saveData.js", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+try {
+  const response = await fetch("/api/saveData.js", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
 
-    const result = await response.json();
-    showToast(result.message || "登録しました！");
-  } catch (error) {
-    console.error("送信エラー:", error);
-    showToast("送信に失敗しました。");
-  }
-});
+  const result = await response.json();
+  showToast(result.message || "登録しました！");
+
+  // ✅ 入力欄をクリア
+  document.getElementById("item").value = "";
+  document.getElementById("price").value = "";
+
+} catch (error) {
+  console.error("送信エラー:", error);
+  showToast("送信に失敗しました。");
+}
+
 
 const canvas = document.getElementById("bgCanvas");
 const ctx = canvas.getContext("2d");
