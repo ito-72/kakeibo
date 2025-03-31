@@ -101,12 +101,26 @@
     .toast.show {
       opacity: 1;
     }
+
+    #bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1; /* 背面に配置 */
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
   </style>
 </head>
 
 
 
 <body>
+
+  <canvas id="bgCanvas"></canvas>
+
   <div class="container">
     <h2>今日の支出を記録</h2>
 
@@ -203,8 +217,60 @@ document.getElementById("submit").addEventListener("click", async () => {
   }
 });
 
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const colors = ["#ff6b6b", "#ffa94d", "#69db7c", "#339af0", "#cc5de8"]; // ブロックカラー
+const circles = [];
+
+function createCircle() {
+  const radius = Math.random() * 10 + 5; // 半径5〜15px
+  const x = Math.random() * canvas.width;
+  const y = canvas.height + radius;
+  const speed = Math.random() * 0.5 + 0.3; // ゆっくり浮く
+  const color = colors[Math.floor(Math.random() * colors.length)];
+
+  circles.push({ x, y, radius, speed, color });
+}
+
+// 定期的に追加（1秒に2個くらい）
+setInterval(createCircle, 500);
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < circles.length; i++) {
+    const c = circles[i];
+    c.y -= c.speed;
+
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
+    ctx.fillStyle = c.color;
+    ctx.fill();
+  }
+
+  // 画面外に出たものは削除
+  while (circles.length > 200) {
+    circles.shift();
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+// リサイズ対応
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
 
 
   </script>
+
+
 </body>
 </html>
