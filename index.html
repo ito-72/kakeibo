@@ -2,15 +2,34 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>記録しとこ</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="/manifest.json">
+
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+
+</head>
+
   <style>
+
     body {
-      font-family: 'Poppins', 'Noto Sans JP', sans-serif;
+      font-family: sans-serif;
       background: #fdf6f0;
       margin: 0;
-      padding: 5rem 1rem 1rem;
+      padding: 5rem 1rem 1rem 1rem; /* 上に大きめ余白！ */
       display: flex;
       justify-content: center;
     }
@@ -19,30 +38,32 @@
       border-radius: 24px;
       padding: 1.5rem;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      max-width: 500px;
+      max-width: 400px;
       width: 100%;
     }
-    .tabs button {
-      margin-right: 0.5rem;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      background: #ffd6a5;
-      cursor: pointer;
-    }
-    .tabs button:hover {
-      background: #ffc078;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
+   h2 {
+  text-align: center;
+  font-family: 'Poppins', 'Noto Sans JP', sans-serif;
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+
+  background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+    label {
+      display: block;
       margin-top: 1rem;
+      font-weight: bold;
     }
-    td, th {
+    input, select {
+      width: 100%;
+      padding: 0.7rem;
       border: 1px solid #ccc;
-      padding: 0.5rem;
-      text-align: left;
+      border-radius: 10px;
+      margin-top: 0.3rem;
+      font-size: 1rem;
     }
     .suggestions {
       display: flex;
@@ -87,50 +108,129 @@
     .toast.show {
       opacity: 1;
     }
+
+    #bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1; /* 背面に配置 */
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+select {
+  appearance: none; /* OSデフォルトの矢印などを非表示 */
+  background-color: #fff3e0;
+  border: none;
+  border-radius: 16px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%207%205-7z%22%20fill%3D%22%23ff6b6b%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 10px 7px;
+}
+
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffa94d66;
+}
+
+input[type="date"] {
+  appearance: none;
+  background-color: #fff3e0;
+  border: none;
+  border-radius: 16px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  color: #333;
+  width: 80%; /* ← 追加ポイント！ */
+  box-sizing: border-box; /* ← padding含めてちょうど100%に収まるように */
+}
+
+
+input[type="date"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffa94d66;
+}
+
+h2 {
+  text-align: center; /* センター寄せ */
+  font-family: 'Poppins', 'Noto Sans JP', sans-serif; /* Poppinsと日本語対応フォント */
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+  /* ✅ クレカチェックボックス：チェック時に〇表示 */
+  input[type="checkbox"]::before {
+    content: "";
+    width: 0.6rem;
+    height: 0.6rem;
+    transform: scale(0);
+    transition: transform 0.15s ease-in-out;
+    box-shadow: inset 1em 1em #ff6b6b;
+    border-radius: 2px;
+  }
+
+  input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
+
+
   </style>
 </head>
+
+
 <body>
+  <canvas id="bgCanvas"></canvas>
+
   <div class="container">
-    <div class="tabs">
-      <button onclick="showTab('input')">入力</button>
-      <button onclick="showTab('cf')">C/F</button>
-      <button onclick="showTab('credit')">クレジット</button>
-      <button onclick="showTab('thisMonth')">今月かかったお金</button>
-    </div>
+    <h2>記録しとこ</h2>
 
-    <div id="tab-input">
-      <label for="date">日付</label>
-      <input type="date" id="date" />
+    <label for="date">日付</label>
+    <input type="date" id="date" />
 
-      <label for="category">カテゴリー</label>
-      <select id="category">
-        <option value="food">食費</option>
-        <option value="daily">日用品</option>
-        <option value="gas">ガソリン</option>
-        <option value="card">カード引き落とし</option>
-        <option value="other">その他</option>
-        <option value="relax">ほっこり</option>
-      </select>
+    <label for="category">カテゴリー</label>
+    <select id="category">
+      <option value="food">食費</option>
+      <option value="daily">日用品</option>
+      <option value="gas">ガソリン</option>
+      <option value="card">カード引き落とし</option> <!-- 🆕 -->
+      <option value="other">その他</option>
+      <option value="relax">ほっこり</option>
+    </select>
 
-      <div class="suggestions" id="suggestions"></div>
+    <div class="suggestions" id="suggestions"></div>
 
-      <label for="item">内容</label>
-      <input type="text" id="item" placeholder="例：お米" />
+    <label for="item">内容</label>
+    <input type="text" id="item" placeholder="例：お米" />
 
-      <label for="price">金額</label>
-      <input type="number" id="price" inputmode="numeric" pattern="[0-9]*" placeholder="例：500" />
+    <label for="price">金額</label>
+    <input type="number" id="price" inputmode="numeric" pattern="[0-9]*" placeholder="例：500" />
 
-      <label for="credit" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: bold;">
-        <input type="checkbox" id="credit" style="appearance: none; width: 1.2rem; height: 1.2rem; border: 2px solid #ffa94d; border-radius: 6px; display: grid; place-content: center; cursor: pointer; accent-color: #ff6b6b; background-color: #fff;">
-        <span style="user-select: none;">クレジット</span>
-      </label>
+   <!-- ✅ スタイリッシュなクレカチェックボックス -->
+<label for="credit" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: bold;">
+  <input type="checkbox" id="credit" style="
+    appearance: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 2px solid #ffa94d;
+    border-radius: 6px;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    accent-color: #ff6b6b;
+    background-color: #fff;
+  ">
+  <span style="user-select: none;">クレジット</span>
+</label>
 
-      <button id="submit">登録する</button>
-    </div>
-
-    <div id="tab-cf" style="display:none;"></div>
-    <div id="tab-credit" style="display:none;"></div>
-    <div id="tab-thisMonth" style="display:none;"></div>
+    <button id="submit">登録する</button>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -182,7 +282,7 @@
         date: document.getElementById("date").value,
         item: document.getElementById("item").value,
         price: document.getElementById("price").value,
-        credit: document.getElementById("credit").checked ? "〇" : ""
+       credit: document.getElementById("credit").checked ? "〇" : ""
       };
 
       try {
@@ -197,40 +297,16 @@
 
         document.getElementById("item").value = "";
         document.getElementById("price").value = "";
-        document.getElementById("credit").checked = false;
+        document.getElementById("credit").checked = false; // ✅ 正しくリセットできる
+
 
       } catch (error) {
         console.error("送信エラー:", error);
         showToast("送信に失敗しました。");
       }
     });
-
-    function showTab(tabName) {
-      ['input', 'cf', 'credit', 'thisMonth'].forEach(name => {
-        document.getElementById('tab-' + name).style.display = (name === tabName ? 'block' : 'none');
-      });
-      if (tabName !== 'input') {
-        fetchSummaryAndDisplay(tabName);
-      }
-    }
-
-    async function fetchSummaryAndDisplay(tabName) {
-      try {
-        const response = await fetch("/api/getSummary.js", { method: "POST" });
-        const data = await response.json();
-        const tableData = data[tabName];
-        const container = document.getElementById("tab-" + tabName);
-        container.innerHTML = createTableHTML(tableData);
-      } catch (err) {
-        console.error("取得失敗:", err);
-      }
-    }
-
-    function createTableHTML(rows) {
-      return `<table>${rows.map(row => `
-        <tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>
-      `).join('')}</table>`;
-    }
   </script>
 </body>
+
+
 </html>
