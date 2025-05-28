@@ -170,7 +170,6 @@ h2 {
   </style>
 </head>
 
-<!-- 省略：<head> と <style> はそのままでOK -->
 
 <body>
   <canvas id="bgCanvas"></canvas>
@@ -186,7 +185,7 @@ h2 {
       <option value="food">食費</option>
       <option value="daily">日用品</option>
       <option value="gas">ガソリン</option>
-      <option value="utility">光熱費</option>
+      <option value="card">カード引き落とし</option> <!-- 🆕 -->
       <option value="other">その他</option>
       <option value="relax">ほっこり</option>
     </select>
@@ -198,6 +197,12 @@ h2 {
 
     <label for="price">金額</label>
     <input type="number" id="price" inputmode="numeric" pattern="[0-9]*" placeholder="例：500" />
+
+    <label for="credit">クレカ</label> <!-- 🆕 -->
+    <select id="credit">
+      <option value="">現金など</option>
+      <option value="〇">〇</option>
+    </select>
 
     <button id="submit">登録する</button>
   </div>
@@ -211,7 +216,6 @@ h2 {
       gas: ["ガソリン"]
     };
 
-    // ✅ ページ読み込み時に本日の日付をセット
     const today = new Date().toISOString().split('T')[0];
     document.getElementById("date").value = today;
 
@@ -246,13 +250,13 @@ h2 {
       setTimeout(() => toast.classList.remove("show"), 2500);
     }
 
-    // ✅ 登録ボタンを押したときの処理
     document.getElementById("submit").addEventListener("click", async () => {
       const data = {
         category: document.getElementById("category").value,
         date: document.getElementById("date").value,
         item: document.getElementById("item").value,
-        price: document.getElementById("price").value
+        price: document.getElementById("price").value,
+        credit: document.getElementById("credit").value // 🆕
       };
 
       try {
@@ -265,68 +269,17 @@ h2 {
         const result = await response.json();
         showToast(result.message || "登録しました！");
 
-        // ✅ 内容と金額をリセット！
         document.getElementById("item").value = "";
         document.getElementById("price").value = "";
+        document.getElementById("credit").value = ""; // 🆕
 
       } catch (error) {
         console.error("送信エラー:", error);
         showToast("送信に失敗しました。");
       }
     });
-
-    // ✅ canvas 背景アニメーション（submitとは無関係に常時実行）
-    const canvas = document.getElementById("bgCanvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const colors = ["#ff6b6b", "#ffa94d", "#69db7c", "#339af0", "#cc5de8"];
-    const circles = [];
-
-    function createCircle() {
-      const radius = Math.random() * 10 + 5;
-      const x = Math.random() * canvas.width;
-      const y = canvas.height + radius;
-      const speed = Math.random() * 0.5 + 0.3;
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      const angle = Math.random() * Math.PI * 2;
-      const swing = Math.random() * 1 + 0.5;
-      circles.push({ x, y, radius, speed, color, angle, swing });
-    }
-
-    for (let i = 0; i < 30; i++) {
-      createCircle();
-    }
-
-    setInterval(createCircle, 500);
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.globalAlpha = 0.6;
-      for (let i = 0; i < circles.length; i++) {
-        const c = circles[i];
-        c.y -= c.speed;
-        c.angle += 0.02;
-        const offsetX = Math.sin(c.angle) * c.swing;
-        ctx.beginPath();
-        ctx.arc(c.x + offsetX, c.y, c.radius, 0, Math.PI * 2);
-        ctx.fillStyle = c.color;
-        ctx.fill();
-      }
-      while (circles.length > 200) {
-        circles.shift();
-      }
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
   </script>
 </body>
+
 
 </html>
