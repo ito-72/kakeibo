@@ -282,7 +282,7 @@ h2 {
         date: document.getElementById("date").value,
         item: document.getElementById("item").value,
         price: document.getElementById("price").value,
-        credit: document.getElementById("credit").value // 🆕
+       credit: document.getElementById("credit").checked ? "〇" : ""
       };
 
       try {
@@ -297,7 +297,8 @@ h2 {
 
         document.getElementById("item").value = "";
         document.getElementById("price").value = "";
-        document.getElementById("credit").value = ""; // 🆕
+        document.getElementById("credit").checked = false; // ✅ 正しくリセットできる
+
 
       } catch (error) {
         console.error("送信エラー:", error);
