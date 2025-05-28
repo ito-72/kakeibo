@@ -166,6 +166,21 @@ h2 {
   margin-bottom: 1.5rem;
 }
 
+  /* ✅ クレカチェックボックス：チェック時に〇表示 */
+  input[type="checkbox"]::before {
+    content: "";
+    width: 0.6rem;
+    height: 0.6rem;
+    transform: scale(0);
+    transition: transform 0.15s ease-in-out;
+    box-shadow: inset 1em 1em #ff6b6b;
+    border-radius: 2px;
+  }
+
+  input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
+
 
   </style>
 </head>
@@ -198,11 +213,22 @@ h2 {
     <label for="price">金額</label>
     <input type="number" id="price" inputmode="numeric" pattern="[0-9]*" placeholder="例：500" />
 
-    <label for="credit">クレカ</label> <!-- 🆕 -->
-    <select id="credit">
-      <option value="">現金など</option>
-      <option value="〇">〇</option>
-    </select>
+   <!-- ✅ スタイリッシュなクレカチェックボックス -->
+<label for="credit" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: bold;">
+  <input type="checkbox" id="credit" style="
+    appearance: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 2px solid #ffa94d;
+    border-radius: 6px;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    accent-color: #ff6b6b;
+    background-color: #fff;
+  ">
+  <span style="user-select: none;">クレカで支払った</span>
+</label>
 
     <button id="submit">登録する</button>
   </div>
