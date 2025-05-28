@@ -7,16 +7,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { category, date, item, price } = req.body;
+  const { category, date, item, price, credit } = req.body;
 
-  // ✅ 英語 → 日本語カテゴリ変換マップ
   const categoryMap = {
     other: "その他",
     food: "食費",
     daily: "日用品",
     relax: "ほっこり",
     gas: "ガソリン",
-    utility: "光熱費"
+    card: "カード引き落とし", // 🆕 追加
+    // utility: 削除してOK
   };
 
   const categoryJP = categoryMap[category] || category;
@@ -30,7 +30,8 @@ export default async function handler(req, res) {
         category: categoryJP,
         date,
         item,
-        price
+        price,
+        credit: credit || "" // 🆕 追加
       })
     });
 
