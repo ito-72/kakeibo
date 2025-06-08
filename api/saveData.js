@@ -14,6 +14,8 @@ export default async function handler(req, res) {
     food: "食費",
     daily: "日用品",
     relax: "ほっこり",
+    atsushi: "篤志外食",          // 🆕追加
+    chihiro: "千尋立て替え"       // 🆕追加
     gas: "ガソリン",
     card: "カード引き落とし", // 🆕 追加
     // utility: 削除してOK
