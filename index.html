@@ -14,17 +14,11 @@
   <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="/manifest.json">
 
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-
-<link rel="apple-touch-icon" href="/icon-192.png">
-
-
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 
   <style>
-
     body {
       font-family: sans-serif;
       background: #fdf6f0;
@@ -153,7 +147,6 @@ input[type="date"] {
   box-sizing: border-box; /* ← padding含めてちょうど100%に収まるように */
 }
 
-
 input[type="date"]:focus {
   outline: none;
   box-shadow: 0 0 0 2px #ffa94d66;
@@ -180,11 +173,8 @@ h2 {
   input[type="checkbox"]:checked::before {
     transform: scale(1);
   }
-
-
   </style>
 </head>
-
 
 <body>
   <canvas id="bgCanvas"></canvas>
@@ -201,10 +191,9 @@ h2 {
       <option value="daily">日用品</option>
       <option value="gas">ガソリン</option>
       <option value="card">カード引き落とし</option>
-     <option value="atsushi">篤志外食</option>         <!-- 🆕追加 -->
-      <option value="chihiro">千尋立て替え</option>     <!-- 🆕追加 -->
       <option value="other">その他</option>
       <option value="relax">ほっこり</option>
+      <option value="zarame">ざらめ</option> <!-- 🆕 追加 -->
     </select>
 
     <div class="suggestions" id="suggestions"></div>
@@ -238,10 +227,12 @@ h2 {
   <div class="toast" id="toast"></div>
 
   <script>
+    // ✅ カテゴリ別サジェスト。必要なければ空配列でOK
     const suggestionsMap = {
       food: ["お肉", "野菜", "お米", "牛乳", "ヨーグルト", "パン", "パスタ", "卵"],
       daily: ["ティッシュ", "トイレットペーパー", "ボディソ", "シャンプー", "コンタクト", "レノア", "アリエール"],
-      gas: ["ガソリン"]
+      gas: ["ガソリン"],
+      zarame: [] // 🆕 追加（今は候補なし）
     };
 
     const today = new Date().toISOString().split('T')[0];
@@ -284,7 +275,7 @@ h2 {
         date: document.getElementById("date").value,
         item: document.getElementById("item").value,
         price: document.getElementById("price").value,
-       credit: document.getElementById("credit").checked ? "〇" : ""
+        credit: document.getElementById("credit").checked ? "〇" : ""
       };
 
       try {
@@ -299,8 +290,7 @@ h2 {
 
         document.getElementById("item").value = "";
         document.getElementById("price").value = "";
-        document.getElementById("credit").checked = false; // ✅ 正しくリセットできる
-
+        document.getElementById("credit").checked = false;
 
       } catch (error) {
         console.error("送信エラー:", error);
@@ -309,6 +299,4 @@ h2 {
     });
   </script>
 </body>
-
-
 </html>
