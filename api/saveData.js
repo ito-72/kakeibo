@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   const { category, date, item, price, credit } = req.body;
 
-  // ✅ 日本語ラベル変換に「ざらめ」を追加
+  // ✅ 日本語ラベル変換（新規2項目を追加）
   const categoryMap = {
     other: "その他",
     food: "食費",
@@ -16,7 +16,9 @@ export default async function handler(req, res) {
     relax: "ほっこり",
     gas: "ガソリン",
     card: "カード引き落とし",
-    zarame: "ざらめ" // 🆕 追加
+    zarame: "ざらめ",
+    atsushi: "篤志外食",      // 追加
+    chihiro: "千尋立て替え"   // 追加
   };
 
   const categoryJP = categoryMap[category] || category;
