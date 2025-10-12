@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>記録しとこ</title>
 
   <link rel="stylesheet" href="style.css">
@@ -193,7 +193,9 @@ h2 {
       <option value="card">カード引き落とし</option>
       <option value="other">その他</option>
       <option value="relax">ほっこり</option>
-      <option value="zarame">ざらめ</option> <!-- 🆕 追加 -->
+      <option value="zarame">ざらめ</option>
+      <option value="atsushi">篤志外食</option> <!-- 追加 -->
+      <option value="chihiro">千尋立て替え</option> <!-- 追加 -->
     </select>
 
     <div class="suggestions" id="suggestions"></div>
@@ -227,12 +229,14 @@ h2 {
   <div class="toast" id="toast"></div>
 
   <script>
-    // ✅ カテゴリ別サジェスト。必要なければ空配列でOK
+    // ✅ カテゴリ別サジェスト
     const suggestionsMap = {
       food: ["お肉", "野菜", "お米", "牛乳", "ヨーグルト", "パン", "パスタ", "卵"],
       daily: ["ティッシュ", "トイレットペーパー", "ボディソ", "シャンプー", "コンタクト", "レノア", "アリエール"],
       gas: ["ガソリン"],
-      zarame: [] // 🆕 追加（今は候補なし）
+      zarame: [],
+      atsushi: [],  // 追加
+      chihiro: []   // 追加
     };
 
     const today = new Date().toISOString().split('T')[0];
