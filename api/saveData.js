@@ -1,4 +1,3 @@
-// /api/saveData.js
 import { GAS_URL } from './config.js';
 
 export default async function handler(req, res) {
@@ -6,9 +5,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { category, date, item, price, credit } = req.body;
+  const { category, date, item, price, credit, chihiro_flag } = req.body;
 
-  // ✅ 日本語ラベル変換（新規2項目を追加）
   const categoryMap = {
     other: "その他",
     food: "食費",
@@ -17,8 +15,8 @@ export default async function handler(req, res) {
     gas: "ガソリン",
     card: "カード引き落とし",
     zarame: "ざらめ",
-    atsushi: "篤志外食",      // 追加
-    chihiro: "千尋立て替え"   // 追加
+    atsushi: "篤志外食",
+    chihiro: "千尋立て替え"
   };
 
   const categoryJP = categoryMap[category] || category;
@@ -33,7 +31,8 @@ export default async function handler(req, res) {
         date,
         item,
         price,
-        credit: credit || ""
+        credit: credit || "",
+        chihiro_flag: chihiro_flag || ""  // ★追加
       })
     });
 
