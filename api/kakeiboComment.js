@@ -1,24 +1,31 @@
 // /api/kakeiboComment.js
 import { GAS_URL } from './config.js';
 
+// ChatGPTコメント取得用API
 export default async function handler(req, res) {
+  // POST 以外は拒否
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { message } = req.body || {};
+  // フロントから送られてくる本文と履歴を取得
+  const { message, history } = req.body || {};
 
+  // message は必須
   if (!message || typeof message !== 'string') {
     return res.status(400).json({ message: 'message は必須です' });
   }
 
   try {
+    // GAS の doPost に投げる
     const response = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mode: 'kakeiboComment',
         message,
+        // 念のためサーバー側でも直近6件に制限
+        history: Array.isArray(history) ? history.slice(-6) : [],
       }),
     });
 
@@ -32,7 +39,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // ★ GAS は「AIのコメント本文」をテキストで返してくる想定
+    // GAS は「AIのコメント本文」をテキストで返してくる想定
     res.status(200).json({
       reply: resultText || 'コメントが空でした',
     });

@@ -2,115 +2,99 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>記録しとこ</title>
+  <title>家計簿 &amp; ChatGPTコメント</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 外部CSS -->
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- PWA関連（必要なければ消してOK） -->
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#ffffff" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <canvas id="bgCanvas"></canvas>
 
-  <div class="container">
-    <h2>記録しとこ</h2>
+  <div class="app-container">
+    <header class="app-header">
+      <h1 class="app-title">家計簿アシスタント</h1>
+      <p class="app-subtitle">支出の記録 ＋ ChatGPTコメント</p>
+    </header>
 
-    <!-- タブ切り替え（記録 / コメント） -->
-    <div class="tab-switcher">
-      <button class="tab-button active" data-index="0">記録</button>
-      <button class="tab-button" data-index="1">コメント</button>
-    </div>
-
-    <!-- 横スライドするカードたち -->
-    <div class="card-track">
-      <!-- カード1：今までの「登録する」フォーム -->
-      <div class="card-panel" id="card-record">
-
-        <label for="date">日付</label>
-        <input type="date" id="date" />
-
-        <label for="category">カテゴリー</label>
-        <select id="category">
-          <option value="food">食費</option>
-          <option value="daily">日用品</option>
-          <option value="gas">ガソリン</option>
-          <option value="card">カード引き落とし</option>
-          <option value="other">その他</option>
-          <option value="relax">ほっこり</option>
-          <option value="zarame">ざらめ</option>
-          <option value="atsushi">篤志外食</option>
-          <option value="chihiro">千尋立て替え</option>
-        </select>
-
-        <div class="suggestions" id="suggestions"></div>
-
-        <label for="item">内容</label>
-        <input type="text" id="item" placeholder="例：お米" />
-
-        <label for="price">金額</label>
-        <input
-          type="number"
-          id="price"
-          inputmode="numeric"
-          pattern="[0-9]*"
-          placeholder="例：500"
-        />
-
-        <!-- クレジット -->
-        <label for="credit" class="checkbox-label">
-          <input type="checkbox" id="credit" />
-          <span>クレジット</span>
-        </label>
-
-        <!-- 千尋立て替えチェックボックス -->
-        <label for="chihiro_flag" class="checkbox-label">
-          <input type="checkbox" id="chihiro_flag" />
-          <span>千尋立て替え</span>
-        </label>
-
-        <button id="submit">登録する</button>
+    <main class="app-main">
+      <!-- カードのタブ -->
+      <div class="tab-buttons">
+        <button class="tab-button active" data-card="0">今日の支出を記録</button>
+        <button class="tab-button" data-card="1">ChatGPTと話す</button>
       </div>
 
-      <!-- カード2：ChatGPT と話すコメント用ウィンドウ -->
-      <div class="card-panel" id="card-chat">
-        <label style="margin-top: 0;">ChatGPTと話す</label>
+      <!-- カードの横スライド領域 -->
+      <div class="card-track-wrapper">
+        <div class="card-track" id="cardTrack">
+          <!-- カード1：入力フォーム -->
+          <div class="card-panel" id="card-input">
+            <label for="date">日付</label>
+            <input type="date" id="date" />
 
-        <div class="chat-window">
-          <!-- チャットの履歴表示エリア -->
-          <div class="chat-log" id="chat-log">
-            <!-- 初期メッセージ -->
-            <div class="chat-row bot">
-              <div class="chat-bubble">
-                家計簿のこと、何でも聞いてください。今月と先月の比較コメントにもそのうち対応します。
+            <label for="category">カテゴリ</label>
+            <select id="category">
+              <option value="食費">食費</option>
+              <option value="日用品">日用品</option>
+              <option value="交通">交通</option>
+              <option value="固定費">固定費</option>
+              <option value="娯楽">娯楽</option>
+              <option value="その他">その他</option>
+            </select>
+
+            <label for="item">内容</label>
+            <input type="text" id="item" placeholder="例：スーパーで買い物" />
+
+            <label for="price">金額</label>
+            <input type="number" id="price" placeholder="例：3500" />
+
+            <div class="check-row">
+              <label>
+                <input type="checkbox" id="credit" />
+                クレジット支払い
+              </label>
+              <label>
+                <input type="checkbox" id="chihiro_flag" />
+                千尋立て替え
+              </label>
+            </div>
+
+            <button id="submit">登録する</button>
+          </div>
+
+          <!-- カード2：ChatGPT と話すコメント用ウィンドウ -->
+          <div class="card-panel" id="card-chat">
+            <label style="margin-top: 0;">ChatGPTと話す</label>
+
+            <div class="chat-window">
+              <!-- チャットの履歴表示エリア -->
+              <div class="chat-log" id="chat-log">
+                <!-- 初期メッセージ -->
+                <div class="chat-row bot">
+                  <div class="chat-bubble">
+                    家計簿のこと、何でも聞いてください。今月と先月の比較コメントにもそのうち対応します。
+                  </div>
+                </div>
+              </div>
+
+              <!-- 入力エリア -->
+              <div class="chat-input-area">
+                <textarea
+                  id="chat-input"
+                  placeholder="例：今月の支出、先月と比べてどう？"
+                ></textarea>
+                <button id="chat-send">送信</button>
               </div>
             </div>
           </div>
-
-          <!-- 入力エリア -->
-          <div class="chat-input-area">
-            <textarea
-              id="chat-input"
-              placeholder="例：今月の支出、先月と比べてどう？"
-            ></textarea>
-            <button id="chat-send">送信</button>
-          </div>
         </div>
       </div>
-    </div>
+
+      <!-- トースト -->
+      <div id="toast"></div>
+    </main>
   </div>
 
-  <div class="toast" id="toast"></div>
-
-    <script>
+  <script>
     // ===== 背景のゆるいアニメ =====
     const bgCanvas = document.getElementById("bgCanvas");
     const ctx = bgCanvas.getContext("2d");
@@ -126,9 +110,9 @@
     const bubbles = Array.from({ length: 20 }).map(() => ({
       x: Math.random() * bgCanvas.width,
       y: Math.random() * bgCanvas.height,
-      r: 8 + Math.random() * 8,
-      vy: 0.3 + Math.random() * 0.4,
-      alpha: 0.2 + Math.random() * 0.3,
+      r: 40 + Math.random() * 60,
+      vy: 0.2 + Math.random() * 0.5,
+      alpha: 0.08 + Math.random() * 0.1,
     }));
 
     function drawBackground() {
@@ -146,49 +130,66 @@
       });
       requestAnimationFrame(drawBackground);
     }
+
     drawBackground();
 
-    // ===== カテゴリごとのサジェストワード =====
-    const suggestionsMap = {
-      food: ["お肉", "野菜", "お米", "牛乳", "ヨーグルト", "パン", "パスタ", "卵"],
-      daily: ["ティッシュ", "トイレットペーパー", "ボディソ", "シャンプー", "コンタクト", "レノア", "アリエール"],
-      gas: ["ガソリン"],
-      card: [],
-      other: [],
-      relax: [],
-      zarame: [],
-      atsushi: [],
-      chihiro: [],
-    };
+    // ===== カードスライド（横スクロール & スワイプ） =====
+    const cardTrack = document.getElementById("cardTrack");
+    const tabButtons = document.querySelectorAll(".tab-button");
+    let currentCardIndex = 0;
 
-    // 今日の日付をセット
-    const today = new Date().toISOString().split("T")[0];
-    document.getElementById("date").value = today;
+    function setCard(index) {
+      if (index < 0) index = 0;
+      if (index > 1) index = 1;
+      currentCardIndex = index;
 
-    const categorySelect = document.getElementById("category");
-    const suggestionsDiv = document.getElementById("suggestions");
-    const itemInput = document.getElementById("item");
+      cardTrack.style.transform = "translateX(" + index * -100 + "%)";
 
-    function updateSuggestions(category) {
-      suggestionsDiv.innerHTML = "";
-      if (!suggestionsMap[category]) return;
-      suggestionsMap[category].forEach((word) => {
-        const tag = document.createElement("div");
-        tag.className = "suggestion-tag";
-        tag.textContent = word;
-        tag.onclick = () => {
-          const current = itemInput.value.trim();
-          itemInput.value = current ? current + " " + word : word;
-        };
-        suggestionsDiv.appendChild(tag);
-      });
+      tabButtons.forEach((b) => b.classList.remove("active"));
+      tabButtons[index].classList.add("active");
     }
 
-    updateSuggestions(categorySelect.value);
-    categorySelect.addEventListener("change", (e) => {
-      updateSuggestions(e.target.value);
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const index = Number(button.dataset.card);
+        setCard(index);
+      });
     });
 
+    let touchStartX = null;
+    let touchCurrentX = null;
+
+    cardTrack.addEventListener("touchstart", (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchCurrentX = touchStartX;
+    });
+
+    cardTrack.addEventListener("touchmove", (e) => {
+      if (touchStartX === null) return;
+      touchCurrentX = e.touches[0].clientX;
+    });
+
+    cardTrack.addEventListener("touchend", () => {
+      if (touchStartX === null || touchCurrentX === null) {
+        touchStartX = null;
+        touchCurrentX = null;
+        return;
+      }
+
+      const diffX = touchCurrentX - touchStartX;
+      const threshold = 50;
+
+      if (diffX < -threshold) {
+        setCard(currentCardIndex + 1); // 左スワイプ → 次へ
+      } else if (diffX > threshold) {
+        setCard(currentCardIndex - 1); // 右スワイプ → 前へ
+      }
+
+      touchStartX = null;
+      touchCurrentX = null;
+    });
+
+    // ===== トースト表示 =====
     function showToast(message) {
       const toast = document.getElementById("toast");
       toast.textContent = message;
@@ -208,89 +209,42 @@
       };
 
       if (!data.date || !data.item || !data.price) {
-        showToast("日付・内容・金額は入力してね");
+        showToast("日付・内容・金額は必須です");
         return;
       }
 
       try {
-        const response = await fetch("/api/saveData.js", {
+        const res = await fetch("/api/saveData.js", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
         });
 
-        const result = await response.json();
-        showToast(result.message || "登録しました！");
+        if (!res.ok) {
+          console.error("APIエラー:", res.status);
+          showToast("登録に失敗しました。時間をおいて再度お試しください。");
+          return;
+        }
 
+        const result = await res.json();
+        console.log("GAS応答:", result);
+
+        showToast("登録しました！");
         document.getElementById("item").value = "";
         document.getElementById("price").value = "";
-        document.getElementById("credit").checked = false;
-        document.getElementById("chihiro_flag").checked = false;
       } catch (error) {
-        console.error("送信エラー:", error);
-        showToast("送信に失敗しました。");
+        console.error("通信エラー:", error);
+        showToast("通信エラーが発生しました。");
       }
-    });
-
-    // ===== タブ & スワイプでカード切り替え =====
-    const cardTrack = document.querySelector(".card-track");
-    const tabButtons = document.querySelectorAll(".tab-button");
-
-    let currentCardIndex = 0; // 0: 記録, 1: コメント
-
-    function setCard(index) {
-      if (index < 0) index = 0;
-      if (index > 1) index = 1;
-      currentCardIndex = index;
-
-      cardTrack.style.transform = "translateX(" + index * -100 + "%)";
-
-      tabButtons.forEach((b) => b.classList.remove("active"));
-      tabButtons[index].classList.add("active");
-    }
-
-    tabButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const index = Number(button.dataset.index) || 0;
-        setCard(index);
-      });
-    });
-
-    // スワイプ検知
-    let touchStartX = null;
-    let touchCurrentX = null;
-
-    cardTrack.addEventListener("touchstart", (e) => {
-      if (!e.touches || e.touches.length === 0) return;
-      touchStartX = e.touches[0].clientX;
-      touchCurrentX = touchStartX;
-    });
-
-    cardTrack.addEventListener("touchmove", (e) => {
-      if (!e.touches || e.touches.length === 0) return;
-      touchCurrentX = e.touches[0].clientX;
-    });
-
-    cardTrack.addEventListener("touchend", () => {
-      if (touchStartX === null || touchCurrentX === null) return;
-
-      const diffX = touchCurrentX - touchStartX;
-      const threshold = 50;
-
-      if (diffX < -threshold) {
-        setCard(currentCardIndex + 1); // 左スワイプ → 次へ
-      } else if (diffX > threshold) {
-        setCard(currentCardIndex - 1); // 右スワイプ → 前へ
-      }
-
-      touchStartX = null;
-      touchCurrentX = null;
     });
 
     // ===== チャット: コメント → API → 返答表示 =====
     const chatLog = document.getElementById("chat-log");
     const chatInput = document.getElementById("chat-input");
     const chatSend = document.getElementById("chat-send");
+
+    // 直近の会話履歴（最大3往復 = 6メッセージ）を保持
+    let chatHistory = [];
 
     function addChatBubble(role, text) {
       const row = document.createElement("div");
@@ -307,13 +261,13 @@
       const text = chatInput.value.trim();
       if (!text) return;
 
-      // ★最初の送信時だけ、初期メッセージを消す
+      // 最初の送信時だけ、初期メッセージを消す
       if (!chatLog.dataset.cleared) {
         chatLog.innerHTML = "";
         chatLog.dataset.cleared = "true";
       }
 
-      // 自分の発言を表示
+      // 自分の発言を画面に追加
       addChatBubble("user", text);
       chatInput.value = "";
 
@@ -321,7 +275,10 @@
         const res = await fetch("/api/kakeiboComment.js", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text }),
+          body: JSON.stringify({
+            message: text,
+            history: chatHistory, // これまでの履歴を一緒に送る
+          }),
         });
 
         if (!res.ok) {
@@ -333,6 +290,15 @@
         const data = await res.json();
         const replyText = data.reply || data.message || "コメントの取得に失敗しました。";
         addChatBubble("bot", replyText);
+
+        // 履歴更新（user → assistant の順で追加）
+        chatHistory.push({ role: "user", content: text });
+        chatHistory.push({ role: "assistant", content: replyText });
+
+        // 直近3往復 = 6メッセージだけ残す
+        if (chatHistory.length > 6) {
+          chatHistory = chatHistory.slice(-6);
+        }
       } catch (err) {
         console.error("通信エラー:", err);
         addChatBubble("bot", "通信エラーが発生しました。電波状況などを確認してください。");
