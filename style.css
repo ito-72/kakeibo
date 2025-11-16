@@ -14,25 +14,12 @@ body {
   padding: 5rem 0 1rem 0;   /* ★ 横方向のpaddingを0に */
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
   box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;       /* ★ 横スクロール禁止 */
 }
 
-/* タイトル（画面上部に固定） */
-.page-title {
-  position: fixed;
-  top: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #ff6b6b;
-  letter-spacing: 0.1em;
-  z-index: 10;
-}
-
-/* カード全体のコンテナ */
 .container {
   background: #ffffff;
   border-radius: 24px;
@@ -48,168 +35,61 @@ body {
 
 h2 {
   text-align: center;
-  margin: 0 0 1.5rem 0;
-  color: #ff6b6b;
+  font-family: "SF Pro Rounded", "Poppins", "Noto Sans JP", sans-serif;
+  font-size: 1.6rem;
+  margin: 0 0 1rem 0;
+  background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* 全体をスライドさせるためのラッパー */
-.card-slider {
-  display: flex;
-  width: 200%;              /* 2つのカードを横に並べるので 200% */
-  transition: transform 0.3s ease;
-}
-
-/* 個々のカードスタイル */
-.card {
-  width: 50%;               /* card-slider から見た幅。2枚で100% */
-  box-sizing: border-box;
-  padding: 0 0.5rem;
-}
-
-/* カード内の共通ラッパ */
-.card-inner {
-  margin-top: 0.5rem;
-}
-
-/* タブ切り替え部分 */
-.tab-switcher {
-  display: flex;
-  justify-content: space-between;
-  background: #ffe8c7;
-  border-radius: 999px;
-  padding: 0.2rem;
-  margin-bottom: 1rem;
-  position: relative;
-}
-
-/* タブボタン */
-.tab-button {
-  flex: 1;
-  border: none;
-  background: transparent;
-  padding: 0.4rem 0;
-  font-size: 0.9rem;
-  cursor: pointer;
-  border-radius: 999px;
-  position: relative;
-  z-index: 1;
-  color: #999;
-}
-
-/* アクティブなタブ */
-.tab-button.active {
-  color: #fff;
-}
-
-/* スライドする丸い背景 */
-.tab-indicator {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: calc(50% - 6px);
-  height: calc(100% - 8px);
-  background: linear-gradient(135deg, #ff9f9f, #ff6b6b);
-  border-radius: 999px;
-  transition: transform 0.3s ease;
-  z-index: 0;
-}
-
-/* 記録タブがアクティブのとき（左） */
-.tab-indicator.record-active {
-  transform: translateX(0%);
-}
-
-/* コメントタブがアクティブのとき（右） */
-.tab-indicator.comment-active {
-  transform: translateX(100%);
-}
-
-/* ===== 記録フォーム ===== */
-.form-section {
-  margin-bottom: 1rem;
-}
-
-.label {
-  font-size: 0.85rem;
-  color: #333;
-  margin-bottom: 0.25rem;
-}
-
-/* 日付入力 */
-.date-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0.6rem;
-  border-radius: 10px;
-  border: 1px solid #f7cbb2;
-  background: #fff5e9;
-  font-size: 0.9rem;
-}
-
-/* カテゴリ見出し */
-.category-title {
+label {
+  display: block;
+  margin-top: 1rem;
   font-weight: bold;
-  margin: 0.5rem 0;
+  font-size: 0.95rem;
 }
 
-/* カテゴリボタン群 */
-.category-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-/* カテゴリボタン */
-.category-button {
-  padding: 0.4rem 0.7rem;
-  border-radius: 999px;
-  border: none;
-  background: #ffe5c2;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-
-/* 選択中のカテゴリボタン */
-.category-button.active {
-  background: #ff9f9f;
-  color: #fff;
-}
-
-/* テキスト入力 */
-.text-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0.6rem;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  font-size: 0.9rem;
-}
-
-/* 金額入力 */
-.amount-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0.6rem;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  font-size: 0.9rem;
-}
-
-/* チェックボックス行 */
-.checkbox-row {
+/* チェックボックス用ラベル共通スタイル */
+.checkbox-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-top: 1rem;
+  font-weight: bold;
 }
 
-/* チェックボックスのラベル */
-.checkbox-label {
+.checkbox-label span {
+  user-select: none;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-top: 0.3rem;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.suggestion-tag {
+  background: #ffe3c2;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  cursor: pointer;
   font-size: 0.9rem;
 }
 
-/* 登録ボタン */
 button {
-
   margin-top: 2rem;
   width: 100%;
   padding: 1rem;
@@ -217,107 +97,194 @@ button {
   color: white;
   border: none;
   border-radius: 16px;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+
+  /* ★ これを追加 */
   box-sizing: border-box;
 }
 
-button:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+button:hover {
+  opacity: 0.9;
 }
 
-/* ===== コメントタブ ===== */
-
-.chat-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 260px);
-  max-height: 500px;
-}
-
-/* 上部：説明テキスト＋チャットログ */
-.chat-main {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0.5rem;
-}
-
-/* 説明ラベル */
-.chat-label {
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: 9999;
   font-size: 0.9rem;
-  margin-bottom: 0.5rem;
 }
 
-/* 説明ボックス */
-.chat-description {
-  background: #ffe0b2;
-  border-radius: 12px;
-  padding: 0.6rem 0.8rem;
-  font-size: 0.85rem;
-  margin-bottom: 0.5rem;
+.toast.show {
+  opacity: 1;
 }
 
-/* チャットログ（スクロール領域） */
-.chat-log {
+#bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+select {
+  appearance: none;
+  background-color: #fff3e0;
+  border: none;
+  border-radius: 16px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%207%205-7z%22%20fill%3D%22%23ff6b6b%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 10px 7px;
+}
+
+input[type="date"] {
+  appearance: none;
+  background-color: #fff3e0;
+  border: none;
+  border-radius: 16px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  color: #333;
+  width: 80%;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid #ffa94d;
+  border-radius: 6px;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  transform: scale(0);
+  transition: transform 0.15s ease-in-out;
+  box-shadow: inset 1em 1em #ff6b6b;
+  border-radius: 2px;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+/* ==== タブ（記録 / コメント）のスイッチャー ==== */
+.tab-switcher {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+  background: #fff3e0;
+  padding: 0.25rem;
+  border-radius: 999px;
+}
+
+.tab-button {
   flex: 1;
-  background: #fff8f2;
-  border-radius: 12px;
-  padding: 0.5rem;
-  overflow-y: auto;
-  font-size: 0.85rem;
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: #ff6b6b;
+}
+
+.tab-button.active {
+  background: #ffe3c2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ==== カードを横に並べてスライドさせる領域 ==== */
+.card-track {
+  display: flex;
+  width: 200%;            /* カード2枚ぶん */
+  transition: transform 0.3s ease;
   box-sizing: border-box;
 }
 
-/* 1行ごとのメッセージ */
-.chat-row {
+.card-panel {
+  width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+/* ==== コメント用チャットエリア ==== */
+.chat-window {
   display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.chat-log {
+  background: #fff7ee;
+  border-radius: 12px;
+  padding: 0.6rem;
+  max-height: 260px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+
+.chat-row {
   margin-bottom: 0.4rem;
 }
 
-/* 自分の発言（右寄せ） */
 .chat-row.user {
-  justify-content: flex-end;
+  text-align: right;
 }
 
-/* Botの発言（左寄せ） */
 .chat-row.bot {
-  justify-content: flex-start;
+  text-align: left;
 }
 
-/* 吹き出しスタイル */
 .chat-bubble {
+  display: inline-block;
+  padding: 0.4rem 0.7rem;
+  border-radius: 14px;
+  background: #ffe3c2;
   max-width: 80%;
-  border-radius: 10px;
-  padding: 0.4rem 0.6rem;
-  line-height: 1.4;
+  text-align: left;
+  white-space: pre-wrap;
   word-wrap: break-word;
 }
 
-/* 自分の吹き出し */
 .chat-row.user .chat-bubble {
-  background: #ffecd5;
+  background: #ff9a9e33;
 }
 
-/* Botの吹き出し */
-.chat-row.bot .chat-bubble {
-  background: #ffffff;
-  border: 1px solid #ffe0b2;
-}
-
-/* 入力欄＋送信ボタン（下部） */
 .chat-input-area {
   display: flex;
-  flex-direction: column;  /* 縦並びに */
   gap: 0.5rem;
+  align-items: flex-end;
 }
 
-/* 入力テキストエリア */
 .chat-input-area textarea {
-  width: 100%;
-  flex: none;
+  flex: 1;
   resize: none;
   border-radius: 10px;
   padding: 0.5rem;
@@ -327,17 +294,13 @@ button:active {
   box-sizing: border-box;
 }
 
-/* 送信ボタン（コメントタブ専用） */
 .chat-input-area button {
-  align-self: flex-end;  /* 右寄せ */
   margin-top: 0;
   padding: 0.6rem 0.8rem;
   font-size: 0.9rem;
   width: auto;
   white-space: nowrap;
 }
-
-/* ==== フッター固定ボタン等を使わない想定なので特に無し ==== */
 
 /* === タブがカードからはみ出さないようにする === */
 .tab-switcher {
