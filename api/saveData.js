@@ -1,3 +1,4 @@
+// /api/saveData.js
 import { GAS_URL } from './config.js';
 
 export default async function handler(req, res) {
@@ -5,8 +6,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  // ★ chihiro_flag を追加で受け取る
   const { category, date, item, price, credit, chihiro_flag } = req.body;
 
+  // ✅ 日本語ラベル変換
   const categoryMap = {
     other: "その他",
     food: "食費",
@@ -32,7 +35,8 @@ export default async function handler(req, res) {
         item,
         price,
         credit: credit || "",
-        chihiro_flag: chihiro_flag || ""  // ★追加
+        // ★ chihiro_flag を GAS にも渡す
+        chihiro_flag: chihiro_flag || ""
       })
     });
 
