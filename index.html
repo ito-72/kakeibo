@@ -16,10 +16,143 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="apple-touch-icon" href="/icon-192.png">
+</head>
 
-<style>
-/* --- 中略：あなたの CSS 全部そのまま --- */
-</style>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fdf6f0;
+      margin: 0;
+      padding: 5rem 1rem 1rem 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+   h2 {
+      text-align: center;
+      font-family: 'Poppins', 'Noto Sans JP', sans-serif;
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-top: 0.3rem;
+      font-size: 1rem;
+    }
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .suggestion-tag {
+      background: #ffe3c2;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #ffa94d, #ff6b6b);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: 9999;
+    }
+    .toast.show {
+      opacity: 1;
+    }
+
+    #bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+
+select {
+  appearance: none;
+  background-color: #fff3e0;
+  border: none;
+  border-radius: 16px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%207%205-7z%22%20fill%3D%22%23ff6b6b%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 10px 7px;
+}
+
+input[type="date"] {
+  appearance: none;
+  background-color: #fff3e0;
+  border: none;
+  border-radius: 16px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  color: #333;
+  width: 80%;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  transform: scale(0);
+  transition: transform 0.15s ease-in-out;
+  box-shadow: inset 1em 1em #ff6b6b;
+  border-radius: 2px;
+}
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+  </style>
 </head>
 
 <body>
@@ -41,6 +174,7 @@
       <option value="relax">ほっこり</option>
       <option value="zarame">ざらめ</option>
       <option value="atsushi">篤志外食</option>
+      <option value="chihiro">千尋立て替え</option>
     </select>
 
     <div class="suggestions" id="suggestions"></div>
@@ -51,76 +185,117 @@
     <label for="price">金額</label>
     <input type="number" id="price" inputmode="numeric" pattern="[0-9]*" placeholder="例：500" />
 
-    <!-- クレジット -->
-    <label for="credit" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: bold;">
-      <input type="checkbox" id="credit" style="
-        appearance: none;
-        width: 1.2rem;
-        height: 1.2rem;
-        border: 2px solid #ffa94d;
-        border-radius: 6px;
-        display: grid;
-        place-content: center;
-        cursor: pointer;
-        background-color: #fff;
-      ">
-      <span style="user-select: none;">クレジット</span>
-    </label>
+   <!-- クレジット -->
+<label for="credit" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: bold;">
+  <input type="checkbox" id="credit" style="
+    appearance: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 2px solid #ffa94d;
+    border-radius: 6px;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    background-color: #fff;
+  ">
+  <span style="user-select: none;">クレジット</span>
+</label>
 
-    <!-- ★追加：千尋立て替え -->
-    <label for="chihiro_flag" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: bold;">
-      <input type="checkbox" id="chihiro_flag" style="
-        appearance: none;
-        width: 1.2rem;
-        height: 1.2rem;
-        border: 2px solid #ffa94d;
-        border-radius: 6px;
-        display: grid;
-        place-content: center;
-        cursor: pointer;
-        background-color: #fff;
-      ">
-      <span style="user-select: none;">千尋立て替え</span>
-    </label>
+<!-- ★ 千尋立て替えチェックボックス追加 -->
+<label for="chihiro_flag" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: bold;">
+  <input type="checkbox" id="chihiro_flag" style="
+    appearance: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 2px solid #ffa94d;
+    border-radius: 6px;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    background-color: #fff;
+  ">
+  <span style="user-select: none;">千尋立て替え</span>
+</label>
 
     <button id="submit">登録する</button>
   </div>
 
   <div class="toast" id="toast"></div>
 
-<script>
-/* --- カテゴリ別サジェスト処理（あなたのコードそのまま） --- */
+  <script>
+    const suggestionsMap = {
+      food: ["お肉", "野菜", "お米", "牛乳", "ヨーグルト", "パン", "パスタ", "卵"],
+      daily: ["ティッシュ", "トイレットペーパー", "ボディソ", "シャンプー", "コンタクト", "レノア", "アリエール"],
+      gas: ["ガソリン"],
+      zarame: [],
+      atsushi: [],
+      chihiro: []
+    };
 
-document.getElementById("submit").addEventListener("click", async () => {
-  const data = {
-    category: document.getElementById("category").value,
-    date: document.getElementById("date").value,
-    item: document.getElementById("item").value,
-    price: document.getElementById("price").value,
-    credit: document.getElementById("credit").checked ? "〇" : "",
-    chihiro_flag: document.getElementById("chihiro_flag").checked ? "〇" : ""  // ★追加
-  };
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("date").value = today;
 
-  try {
-    const response = await fetch("/api/saveData.js", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+    const categorySelect = document.getElementById("category");
+    const suggestionsDiv = document.getElementById("suggestions");
+    const itemInput = document.getElementById("item");
+
+    function updateSuggestions(category) {
+      suggestionsDiv.innerHTML = "";
+      if (!suggestionsMap[category]) return;
+      suggestionsMap[category].forEach(word => {
+        const tag = document.createElement("div");
+        tag.className = "suggestion-tag";
+        tag.textContent = word;
+        tag.onclick = () => {
+          const current = itemInput.value.trim();
+          itemInput.value = current ? `${current} ${word}` : word;
+        };
+        suggestionsDiv.appendChild(tag);
+      });
+    }
+
+    updateSuggestions(categorySelect.value);
+    categorySelect.addEventListener("change", (e) => {
+      updateSuggestions(e.target.value);
     });
 
-    const result = await response.json();
-    showToast(result.message || "登録しました！");
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    }
 
-    document.getElementById("item").value = "";
-    document.getElementById("price").value = "";
-    document.getElementById("credit").checked = false;
-    document.getElementById("chihiro_flag").checked = false;  // ★初期化
+    document.getElementById("submit").addEventListener("click", async () => {
+      const data = {
+        category: document.getElementById("category").value,
+        date: document.getElementById("date").value,
+        item: document.getElementById("item").value,
+        price: document.getElementById("price").value,
+        credit: document.getElementById("credit").checked ? "〇" : "",
+        chihiro_flag: document.getElementById("chihiro_flag").checked ? "〇" : ""  // ★追加
+      };
 
-  } catch (error) {
-    console.error("送信エラー:", error);
-    showToast("送信に失敗しました。");
-  }
-});
-</script>
+      try {
+        const response = await fetch("/api/saveData.js", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        showToast(result.message || "登録しました！");
+
+        document.getElementById("item").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("credit").checked = false;
+        document.getElementById("chihiro_flag").checked = false;
+
+      } catch (error) {
+        console.error("送信エラー:", error);
+        showToast("送信に失敗しました。");
+      }
+    });
+  </script>
 </body>
 </html>
