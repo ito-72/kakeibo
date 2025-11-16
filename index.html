@@ -2,44 +2,49 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>記録しとこ</title>
 
-  <link rel="stylesheet" href="style.css">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-  <link rel="manifest" href="/manifest.json">
+  <!-- 任意の外部CSS（既存のものがあれば） -->
+  <link rel="stylesheet" href="style.css" />
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="apple-touch-icon" href="/icon-192.png">
-</head>
+  <!-- PWA関連（必要なければ削ってOK） -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+  <link rel="manifest" href="/manifest.json" />
 
   <style>
     body {
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "YuGothic", "Yu Gothic", sans-serif;
       background: #fdf6f0;
       margin: 0;
       padding: 5rem 1rem 1rem 1rem;
       display: flex;
       justify-content: center;
+      box-sizing: border-box;
     }
+
     .container {
-      background: white;
+      background: #ffffff;
       border-radius: 24px;
       padding: 1.5rem;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       max-width: 400px;
       width: 100%;
+      position: relative;
+      overflow: hidden; /* 横スライド用 */
     }
-   h2 {
+
+    h2 {
       text-align: center;
-      font-family: 'Poppins', 'Noto Sans JP', sans-serif;
+      font-family: "SF Pro Rounded", "Poppins", "Noto Sans JP", sans-serif;
       font-size: 1.6rem;
-      margin-bottom: 1.5rem;
+      margin: 0 0 1rem 0;
       background: linear-gradient(90deg, #ff9a9e, #fad0c4);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -49,21 +54,27 @@
       display: block;
       margin-top: 1rem;
       font-weight: bold;
+      font-size: 0.95rem;
     }
-    input, select {
+
+    input,
+    select {
       width: 100%;
       padding: 0.7rem;
       border: 1px solid #ccc;
       border-radius: 10px;
       margin-top: 0.3rem;
       font-size: 1rem;
+      box-sizing: border-box;
     }
+
     .suggestions {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
       margin-top: 0.5rem;
     }
+
     .suggestion-tag {
       background: #ffe3c2;
       padding: 0.4rem 0.8rem;
@@ -71,6 +82,7 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
+
     button {
       margin-top: 2rem;
       width: 100%;
@@ -81,10 +93,13 @@
       border-radius: 16px;
       font-size: 1.1rem;
       cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
     }
+
     button:hover {
       opacity: 0.9;
     }
+
     .toast {
       position: fixed;
       bottom: 20px;
@@ -97,7 +112,9 @@
       opacity: 0;
       transition: opacity 0.4s;
       z-index: 9999;
+      font-size: 0.9rem;
     }
+
     .toast.show {
       opacity: 1;
     }
@@ -112,127 +129,332 @@
       pointer-events: none;
     }
 
-select {
-  appearance: none;
-  background-color: #fff3e0;
-  border: none;
-  border-radius: 16px;
-  padding: 0.7rem 1rem;
-  font-size: 1rem;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%207%205-7z%22%20fill%3D%22%23ff6b6b%22/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 10px 7px;
-}
+    select {
+      appearance: none;
+      background-color: #fff3e0;
+      border: none;
+      border-radius: 16px;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%207%205-7z%22%20fill%3D%22%23ff6b6b%22/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 10px 7px;
+    }
 
-input[type="date"] {
-  appearance: none;
-  background-color: #fff3e0;
-  border: none;
-  border-radius: 16px;
-  padding: 0.7rem 1rem;
-  font-size: 1rem;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  color: #333;
-  width: 80%;
-}
+    input[type="date"] {
+      appearance: none;
+      background-color: #fff3e0;
+      border: none;
+      border-radius: 16px;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      color: #333;
+      width: 80%;
+    }
 
-input[type="checkbox"]::before {
-  content: "";
-  width: 0.6rem;
-  height: 0.6rem;
-  transform: scale(0);
-  transition: transform 0.15s ease-in-out;
-  box-shadow: inset 1em 1em #ff6b6b;
-  border-radius: 2px;
-}
-input[type="checkbox"]:checked::before {
-  transform: scale(1);
-}
+    input[type="checkbox"] {
+      appearance: none;
+      width: 1.2rem;
+      height: 1.2rem;
+      border: 2px solid #ffa94d;
+      border-radius: 6px;
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      background-color: #fff;
+    }
+
+    input[type="checkbox"]::before {
+      content: "";
+      width: 0.6rem;
+      height: 0.6rem;
+      transform: scale(0);
+      transition: transform 0.15s ease-in-out;
+      box-shadow: inset 1em 1em #ff6b6b;
+      border-radius: 2px;
+    }
+
+    input[type="checkbox"]:checked::before {
+      transform: scale(1);
+    }
+
+    /* ==== タブ（記録 / コメント）のスイッチャー ==== */
+    .tab-switcher {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+      background: #fff3e0;
+      padding: 0.25rem;
+      border-radius: 999px;
+    }
+
+    .tab-button {
+      flex: 1;
+      border: none;
+      background: transparent;
+      border-radius: 999px;
+      padding: 0.4rem 0;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #ff6b6b;
+    }
+
+    .tab-button.active {
+      background: #ffe3c2;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ==== カードを横に並べてスライドさせる領域 ==== */
+    .card-track {
+      display: flex;
+      width: 200%; /* カード2枚ぶん */
+      transition: transform 0.3s ease;
+    }
+
+    .card-panel {
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    /* ==== コメント用チャットエリア ==== */
+    .chat-window {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .chat-log {
+      background: #fff7ee;
+      border-radius: 12px;
+      padding: 0.6rem;
+      max-height: 260px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+
+    .chat-row {
+      margin-bottom: 0.4rem;
+    }
+
+    .chat-row.user {
+      text-align: right;
+    }
+
+    .chat-row.bot {
+      text-align: left;
+    }
+
+    .chat-bubble {
+      display: inline-block;
+      padding: 0.4rem 0.7rem;
+      border-radius: 14px;
+      background: #ffe3c2;
+      max-width: 80%;
+      text-align: left;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .chat-row.user .chat-bubble {
+      background: #ff9a9e33;
+    }
+
+    .chat-input-area {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+
+    .chat-input-area textarea {
+      flex: 1;
+      resize: none;
+      border-radius: 10px;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+      min-height: 60px;
+      box-sizing: border-box;
+    }
+
+    .chat-input-area button {
+      margin-top: 0;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.9rem;
+      width: auto;
+      white-space: nowrap;
+    }
   </style>
 </head>
-
 <body>
   <canvas id="bgCanvas"></canvas>
 
   <div class="container">
     <h2>記録しとこ</h2>
 
-    <label for="date">日付</label>
-    <input type="date" id="date" />
+    <!-- タブ切り替え（記録 / コメント） -->
+    <div class="tab-switcher">
+      <button class="tab-button active" data-index="0">記録</button>
+      <button class="tab-button" data-index="1">コメント</button>
+    </div>
 
-    <label for="category">カテゴリー</label>
-    <select id="category">
-      <option value="food">食費</option>
-      <option value="daily">日用品</option>
-      <option value="gas">ガソリン</option>
-      <option value="card">カード引き落とし</option>
-      <option value="other">その他</option>
-      <option value="relax">ほっこり</option>
-      <option value="zarame">ざらめ</option>
-      <option value="atsushi">篤志外食</option>
-      <option value="chihiro">千尋立て替え</option>
-    </select>
+    <!-- 横スライドするカードたち -->
+    <div class="card-track">
+      <!-- カード1：今までの「登録する」フォーム -->
+      <div class="card-panel" id="card-record">
 
-    <div class="suggestions" id="suggestions"></div>
+        <label for="date">日付</label>
+        <input type="date" id="date" />
 
-    <label for="item">内容</label>
-    <input type="text" id="item" placeholder="例：お米" />
+        <label for="category">カテゴリー</label>
+        <select id="category">
+          <option value="food">食費</option>
+          <option value="daily">日用品</option>
+          <option value="gas">ガソリン</option>
+          <option value="card">カード引き落とし</option>
+          <option value="other">その他</option>
+          <option value="relax">ほっこり</option>
+          <option value="zarame">ざらめ</option>
+          <option value="atsushi">篤志外食</option>
+          <option value="chihiro">千尋立て替え</option>
+        </select>
 
-    <label for="price">金額</label>
-    <input type="number" id="price" inputmode="numeric" pattern="[0-9]*" placeholder="例：500" />
+        <div class="suggestions" id="suggestions"></div>
 
-   <!-- クレジット -->
-<label for="credit" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: bold;">
-  <input type="checkbox" id="credit" style="
-    appearance: none;
-    width: 1.2rem;
-    height: 1.2rem;
-    border: 2px solid #ffa94d;
-    border-radius: 6px;
-    display: grid;
-    place-content: center;
-    cursor: pointer;
-    background-color: #fff;
-  ">
-  <span style="user-select: none;">クレジット</span>
-</label>
+        <label for="item">内容</label>
+        <input type="text" id="item" placeholder="例：お米" />
 
-<!-- ★ 千尋立て替えチェックボックス追加 -->
-<label for="chihiro_flag" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: bold;">
-  <input type="checkbox" id="chihiro_flag" style="
-    appearance: none;
-    width: 1.2rem;
-    height: 1.2rem;
-    border: 2px solid #ffa94d;
-    border-radius: 6px;
-    display: grid;
-    place-content: center;
-    cursor: pointer;
-    background-color: #fff;
-  ">
-  <span style="user-select: none;">千尋立て替え</span>
-</label>
+        <label for="price">金額</label>
+        <input
+          type="number"
+          id="price"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          placeholder="例：500"
+        />
 
-    <button id="submit">登録する</button>
+        <!-- クレジット -->
+        <label
+          for="credit"
+          style="
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-weight: bold;
+          "
+        >
+          <input type="checkbox" id="credit" />
+          <span style="user-select: none;">クレジット</span>
+        </label>
+
+        <!-- 千尋立て替えチェックボックス -->
+        <label
+          for="chihiro_flag"
+          style="
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-weight: bold;
+          "
+        >
+          <input type="checkbox" id="chihiro_flag" />
+          <span style="user-select: none;">千尋立て替え</span>
+        </label>
+
+        <button id="submit">登録する</button>
+      </div>
+
+      <!-- カード2：ChatGPT と話すコメント用ウィンドウ -->
+      <div class="card-panel" id="card-chat">
+        <label style="margin-top: 0;">ChatGPTと話す</label>
+
+        <div class="chat-window">
+          <!-- チャットの履歴表示エリア -->
+          <div class="chat-log" id="chat-log">
+            <!-- 初期メッセージ -->
+            <div class="chat-row bot">
+              <div class="chat-bubble">
+                家計簿のこと、何でも聞いてください。今月と先月の比較コメントにもそのうち対応します。
+              </div>
+            </div>
+          </div>
+
+          <!-- 入力エリア -->
+          <div class="chat-input-area">
+            <textarea
+              id="chat-input"
+              placeholder="例：今月の支出、先月と比べてどう？"
+            ></textarea>
+            <button id="chat-send">送信</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
   <script>
+    // ===== 背景のゆるいアニメ（シンプル版） =====
+    const bgCanvas = document.getElementById("bgCanvas");
+    const ctx = bgCanvas.getContext("2d");
+
+    function resizeCanvas() {
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    const bubbles = Array.from({ length: 20 }).map(() => ({
+      x: Math.random() * bgCanvas.width,
+      y: Math.random() * bgCanvas.height,
+      r: 8 + Math.random() * 8,
+      vy: 0.3 + Math.random() * 0.4,
+      alpha: 0.2 + Math.random() * 0.3,
+    }));
+
+    function drawBackground() {
+      ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      bubbles.forEach((b) => {
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(255, 154, 158," + b.alpha + ")";
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+        b.y -= b.vy;
+        if (b.y + b.r < 0) {
+          b.y = bgCanvas.height + b.r;
+          b.x = Math.random() * bgCanvas.width;
+        }
+      });
+      requestAnimationFrame(drawBackground);
+    }
+    drawBackground();
+
+    // ===== カテゴリごとのサジェストワード =====
     const suggestionsMap = {
       food: ["お肉", "野菜", "お米", "牛乳", "ヨーグルト", "パン", "パスタ", "卵"],
       daily: ["ティッシュ", "トイレットペーパー", "ボディソ", "シャンプー", "コンタクト", "レノア", "アリエール"],
       gas: ["ガソリン"],
+      card: [],
+      other: [],
+      relax: [],
       zarame: [],
       atsushi: [],
-      chihiro: []
+      chihiro: [],
     };
 
-    const today = new Date().toISOString().split('T')[0];
+    // 今日の日付をセット
+    const today = new Date().toISOString().split("T")[0];
     document.getElementById("date").value = today;
 
     const categorySelect = document.getElementById("category");
@@ -242,13 +464,13 @@ input[type="checkbox"]:checked::before {
     function updateSuggestions(category) {
       suggestionsDiv.innerHTML = "";
       if (!suggestionsMap[category]) return;
-      suggestionsMap[category].forEach(word => {
+      suggestionsMap[category].forEach((word) => {
         const tag = document.createElement("div");
         tag.className = "suggestion-tag";
         tag.textContent = word;
         tag.onclick = () => {
           const current = itemInput.value.trim();
-          itemInput.value = current ? `${current} ${word}` : word;
+          itemInput.value = current ? current + " " + word : word;
         };
         suggestionsDiv.appendChild(tag);
       });
@@ -266,6 +488,7 @@ input[type="checkbox"]:checked::before {
       setTimeout(() => toast.classList.remove("show"), 2500);
     }
 
+    // ===== 家計簿の登録ボタン =====
     document.getElementById("submit").addEventListener("click", async () => {
       const data = {
         category: document.getElementById("category").value,
@@ -273,14 +496,19 @@ input[type="checkbox"]:checked::before {
         item: document.getElementById("item").value,
         price: document.getElementById("price").value,
         credit: document.getElementById("credit").checked ? "〇" : "",
-        chihiro_flag: document.getElementById("chihiro_flag").checked ? "〇" : ""  // ★追加
+        chihiro_flag: document.getElementById("chihiro_flag").checked ? "〇" : "",
       };
+
+      if (!data.date || !data.item || !data.price) {
+        showToast("日付・内容・金額は入力してね");
+        return;
+      }
 
       try {
         const response = await fetch("/api/saveData.js", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
         });
 
         const result = await response.json();
@@ -290,11 +518,50 @@ input[type="checkbox"]:checked::before {
         document.getElementById("price").value = "";
         document.getElementById("credit").checked = false;
         document.getElementById("chihiro_flag").checked = false;
-
       } catch (error) {
         console.error("送信エラー:", error);
         showToast("送信に失敗しました。");
       }
+    });
+
+    // ===== タブをタップしたらカードをスライド =====
+    const cardTrack = document.querySelector(".card-track");
+    const tabButtons = document.querySelectorAll(".tab-button");
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const index = Number(button.dataset.index) || 0;
+        cardTrack.style.transform = "translateX(" + index * -100 + "%)";
+        tabButtons.forEach((b) => b.classList.remove("active"));
+        button.classList.add("active");
+      });
+    });
+
+    // ===== チャット用のダミー処理（まだ OpenAI 未接続） =====
+    const chatLog = document.getElementById("chat-log");
+    const chatInput = document.getElementById("chat-input");
+    const chatSend = document.getElementById("chat-send");
+
+    function addChatBubble(role, text) {
+      const row = document.createElement("div");
+      row.className = "chat-row " + role;
+      const bubble = document.createElement("div");
+      bubble.className = "chat-bubble";
+      bubble.textContent = text;
+      row.appendChild(bubble);
+      chatLog.appendChild(row);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    chatSend.addEventListener("click", () => {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      addChatBubble("user", text);
+      chatInput.value = "";
+
+      const dummyReply =
+        "（ダミー返信）\n\nあとで、このメッセージに対して「今月と先月の家計簿データ」を読んだコメントを返すようにします。";
+      addChatBubble("bot", dummyReply);
     });
   </script>
 </body>
