@@ -6,10 +6,9 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>記録しとこ</title>
 
-  <!-- 任意の外部CSS（既存のものがあれば） -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- PWA関連（必要なければ削ってOK） -->
+  <!-- PWA関連（必要なければ消してOK） -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#ffffff" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -19,6 +18,10 @@
   <link rel="manifest" href="/manifest.json" />
 
   <style>
+    html {
+      overflow-x: hidden;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "YuGothic", "Yu Gothic", sans-serif;
       background: #fdf6f0;
@@ -27,6 +30,8 @@
       display: flex;
       justify-content: center;
       box-sizing: border-box;
+      max-width: 100vw;       /* 画面幅を超えないように */
+      overflow-x: hidden;     /* 横スクロール禁止 */
     }
 
     .container {
@@ -37,7 +42,7 @@
       max-width: 400px;
       width: 100%;
       position: relative;
-      overflow: hidden; /* 横スライド用 */
+      overflow: hidden; /* 内側のカードだけスライドさせる */
     }
 
     h2 {
@@ -403,7 +408,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ===== 背景のゆるいアニメ（シンプル版） =====
+    // ===== 背景のゆるいアニメ =====
     const bgCanvas = document.getElementById("bgCanvas");
     const ctx = bgCanvas.getContext("2d");
 
@@ -524,17 +529,61 @@
       }
     });
 
-    // ===== タブをタップしたらカードをスライド =====
+    // ===== タブ & スワイプでカード切り替え =====
     const cardTrack = document.querySelector(".card-track");
     const tabButtons = document.querySelectorAll(".tab-button");
+
+    let currentCardIndex = 0; // 0: 記録, 1: コメント
+
+    function setCard(index) {
+      if (index < 0) index = 0;
+      if (index > 1) index = 1;
+      currentCardIndex = index;
+
+      cardTrack.style.transform = "translateX(" + index * -100 + "%)";
+
+      tabButtons.forEach((b) => b.classList.remove("active"));
+      tabButtons[index].classList.add("active");
+    }
 
     tabButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const index = Number(button.dataset.index) || 0;
-        cardTrack.style.transform = "translateX(" + index * -100 + "%)";
-        tabButtons.forEach((b) => b.classList.remove("active"));
-        button.classList.add("active");
+        setCard(index);
       });
+    });
+
+    // スワイプ検知
+    let touchStartX = null;
+    let touchCurrentX = null;
+
+    cardTrack.addEventListener("touchstart", (e) => {
+      if (!e.touches || e.touches.length === 0) return;
+      touchStartX = e.touches[0].clientX;
+      touchCurrentX = touchStartX;
+    });
+
+    cardTrack.addEventListener("touchmove", (e) => {
+      if (!e.touches || e.touches.length === 0) return;
+      touchCurrentX = e.touches[0].clientX;
+    });
+
+    cardTrack.addEventListener("touchend", () => {
+      if (touchStartX === null || touchCurrentX === null) return;
+
+      const diffX = touchCurrentX - touchStartX;
+      const threshold = 50; // 何px以上でスワイプとみなすか
+
+      if (diffX < -threshold) {
+        // 左へスワイプ → 次のカードへ
+        setCard(currentCardIndex + 1);
+      } else if (diffX > threshold) {
+        // 右へスワイプ → 前のカードへ
+        setCard(currentCardIndex - 1);
+      }
+
+      touchStartX = null;
+      touchCurrentX = null;
     });
 
     // ===== チャット用のダミー処理（まだ OpenAI 未接続） =====
