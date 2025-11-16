@@ -110,7 +110,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <script>
+    <script>
     // ===== 背景のゆるいアニメ =====
     const bgCanvas = document.getElementById("bgCanvas");
     const ctx = bgCanvas.getContext("2d");
@@ -275,21 +275,19 @@
       if (touchStartX === null || touchCurrentX === null) return;
 
       const diffX = touchCurrentX - touchStartX;
-      const threshold = 50; // 何px以上でスワイプとみなすか
+      const threshold = 50;
 
       if (diffX < -threshold) {
-        // 左へスワイプ → 次のカードへ
-        setCard(currentCardIndex + 1);
+        setCard(currentCardIndex + 1); // 左スワイプ → 次へ
       } else if (diffX > threshold) {
-        // 右へスワイプ → 前のカードへ
-        setCard(currentCardIndex - 1);
+        setCard(currentCardIndex - 1); // 右スワイプ → 前へ
       }
 
       touchStartX = null;
       touchCurrentX = null;
     });
 
-    // ===== チャット用のダミー処理（まだ OpenAI 未接続） =====
+    // ===== チャット: コメント → API → 返答表示 =====
     const chatLog = document.getElementById("chat-log");
     const chatInput = document.getElementById("chat-input");
     const chatSend = document.getElementById("chat-send");
@@ -305,16 +303,42 @@
       chatLog.scrollTop = chatLog.scrollHeight;
     }
 
-    chatSend.addEventListener("click", () => {
+    chatSend.addEventListener("click", async () => {
       const text = chatInput.value.trim();
       if (!text) return;
+
+      // ★最初の送信時だけ、初期メッセージを消す
+      if (!chatLog.dataset.cleared) {
+        chatLog.innerHTML = "";
+        chatLog.dataset.cleared = "true";
+      }
+
+      // 自分の発言を表示
       addChatBubble("user", text);
       chatInput.value = "";
 
-      const dummyReply =
-        "（ダミー返信）\n\nあとで、このメッセージに対して「今月と先月の家計簿データ」を読んだコメントを返すようにします。";
-      addChatBubble("bot", dummyReply);
+      try {
+        const res = await fetch("/api/kakeiboComment.js", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text }),
+        });
+
+        if (!res.ok) {
+          console.error("APIエラー:", res.status);
+          addChatBubble("bot", "コメント取得でエラーが発生しました。時間をおいて試してください。");
+          return;
+        }
+
+        const data = await res.json();
+        const replyText = data.reply || data.message || "コメントの取得に失敗しました。";
+        addChatBubble("bot", replyText);
+      } catch (err) {
+        console.error("通信エラー:", err);
+        addChatBubble("bot", "通信エラーが発生しました。電波状況などを確認してください。");
+      }
     });
   </script>
+
 </body>
 </html>

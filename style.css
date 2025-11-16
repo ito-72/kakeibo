@@ -298,3 +298,13 @@ input[type="checkbox"]:checked::before {
   width: auto;
   white-space: nowrap;
 }
+
+/* === タブがカードからはみ出さないようにする === */
+.tab-switcher {
+  flex-wrap: wrap;        /* 必要なら2段目、3段目に折り返す */
+}
+
+.tab-button {
+  width: auto;            /* button { width:100% } を打ち消す */
+  flex: 0 1 auto;         /* 中身の文字に合わせた幅 */
+}
